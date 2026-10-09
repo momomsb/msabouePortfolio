@@ -142,7 +142,7 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
                 message.error && "rounded-bl-md border border-danger/40 bg-danger/10 text-danger",
               )}
             >
-              {message.role === "user" ? message.content : <MessageContent text={message.content} locale={locale} />}
+              {message.role === "user" ? message.content : <MessageContent text={message.content} />}
             </div>
           </div>
         ))}

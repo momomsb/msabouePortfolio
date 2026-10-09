@@ -1,4 +1,4 @@
-import { getAvailableSocials, getCaseStudy, getContent } from "@/lib/content";
+import { getAvailableSocials, getContent } from "@/lib/content";
 import { formatDateRange, formatPartialDate } from "@/lib/utils";
 
 /**
@@ -42,24 +42,11 @@ export function buildKnowledgeBase() {
   section("Projects");
   for (const project of projects) {
     lines.push(
-      `- ${project.title}${project.year ? ` (${project.year})` : ""}${project.featured ? " [main / featured project]" : ""}: ${project.description}`,
+      `- ${project.title}${project.featured ? " [main / featured project]" : ""}: ${project.description}`,
       `  Categories: ${project.categories.join(", ")}`,
       `  Technologies: ${project.technologies.join(", ")}`,
     );
     if (project.context) lines.push(`  Context: ${project.context}`);
-    if (project.highlights?.length) lines.push(`  ${project.highlightsTitle ?? "Highlights"}: ${project.highlights.join(", ")}`);
-    const repos = [project.github, ...(project.repositories ?? []).map((repo) => repo.url)].filter(Boolean);
-    if (repos.length) lines.push(`  Code: ${repos.join(", ")}`);
-    const study = getCaseStudy(content, project.slug);
-    if (study) {
-      for (const section of study.sections) {
-        if (section.kind === "text" && section.body.length > 0) {
-          lines.push(`  ${section.title}: ${[...section.body, ...(section.bullets ?? [])].join(" ")}`);
-        } else if (section.kind === "features") {
-          lines.push(`  ${section.title}: ${section.groups.map((group) => `${group.title}: ${group.items.join("; ")}`).join(" | ")}`);
-        }
-      }
-    }
   }
 
   section("Engineering domains");

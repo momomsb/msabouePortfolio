@@ -1,5 +1,4 @@
 import { About } from "@/components/sections/about";
-import { BuildingInPublic } from "@/components/sections/building-in-public";
 import { Certifications } from "@/components/sections/certifications";
 import { Contact } from "@/components/sections/contact";
 import { Education } from "@/components/sections/education";
@@ -20,7 +19,6 @@ export default function HomePage() {
       <TechStack />
       <Certifications />
       <Education />
-      <BuildingInPublic />
       <Contact />
     </>
   );

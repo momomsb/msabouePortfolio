@@ -22,23 +22,22 @@ All content lives in `data/`. Components never hold content.
 title: { en: "Internal web application for meeting management", fr: "Application web interne de gestion des réunions" },
 ```
 
-| File                     | What it controls                                                                                               |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `data/profile.ts`        | Name, role, tagline, summary, availability, languages, interests, CV path                                      |
-| `data/socials.ts`        | GitHub / LinkedIn / Email links (`null` = hidden) and the GitHub username                                      |
-| `data/experience.ts`     | Experience timeline                                                                                            |
-| `data/projects.ts`       | Projects grid, filters and the featured project                                                                |
-| `data/case-studies.ts`   | Case studies (`/projects/[slug]`): ordered sections (text, features, architecture, stack, indicators, gallery) |
-| `data/certifications.ts` | Certifications, filters and the spotlight (`featured: true`)                                                   |
-| `data/skills.ts`         | Engineering domains and the tech stack element table                                                           |
-| `data/education.ts`      | Education entries                                                                                              |
-| `data/navigation.ts`     | Navbar links                                                                                                   |
+| File                     | What it controls                                                          |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `data/profile.ts`        | Name, role, tagline, summary, availability, languages, interests, CV path |
+| `data/socials.ts`        | GitHub / LinkedIn / Email links (`null` = hidden)                         |
+| `data/experience.ts`     | Experience timeline                                                       |
+| `data/projects.ts`       | Projects grid, filters and the featured project                           |
+| `data/certifications.ts` | Certifications, filters and the spotlight (`featured: true`)              |
+| `data/skills.ts`         | Engineering domains and the tech stack element table                      |
+| `data/education.ts`      | Education entries                                                         |
+| `data/navigation.ts`     | Navbar links                                                              |
 
 Missing content (empty results, missing links, no CV…) shows a purple **TODO** note in `npm run dev` only. Production never shows placeholders: the empty element is simply hidden.
 
 - **Photo**: `photo` in `data/profile.ts` (file in `public/images/`).
-- **CV**: put the PDF in `public/cv/` and set `cvPath` in `data/profile.ts` to show "Download CV".
-- **Project images**: put them in `public/projects/<Project>/`, set `image` (cover) and optionally `gallery` (screenshots shown in the case study with a fullscreen viewer). Without an image, a generated visual is shown.
+- **CV**: put one PDF per language in `public/cv/` and list them in `cv` in `data/profile.ts`; "Download CV" then offers the French or English version.
+- **Projects**: a short presentation, technologies and screenshots only (no dates, no repository links). Put screenshots in `public/projects/<Project>/`, set `image` (cover) and `gallery` (opened in a fullscreen viewer from the card).
 - **Certificates**: badges and certificate files go in `public/certifications/` (`image` for a badge, `certificateFile` for the certificate itself: an image shows a preview + "View certificate").
 - **Verification links**: paste each link in the `credentialUrl` field of `data/certifications.ts`; the "Verify credential" button appears automatically.
 
@@ -62,15 +61,14 @@ Copy `.env.example` to `.env.local`. All keys are optional; the site works witho
 | `ANTHROPIC_API_KEY`                                        | server | Enables Claude for "Ask my AI". Without it, the assistant runs in demo mode with deterministic answers from `data/` |
 | `ANTHROPIC_MODEL`                                          | server | Model override (default `claude-opus-5-5`)                                                                          |
 | `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` | server | Contact form delivery via Resend. Without them, the form tells visitors it isn't connected yet                      |
-| `GITHUB_TOKEN`                                             | server | Adds the contribution calendar to "Building in public" and raises GitHub API limits                                 |
 
-Secrets are only read in server code (`app/api/*`, `lib/chat/claude.ts`, `lib/email.ts`, `lib/github.ts`). `.env*` files are git-ignored except `.env.example`.
+Secrets are only read in server code (`app/api/*`, `lib/chat/claude.ts`, `lib/email.ts`). `.env*` files are git-ignored except `.env.example`.
 
 ## Architecture
 
 ```
 app/
-  [lang]/               localized pages (root layout, home, case studies, OG image)
+  [lang]/               localized pages (root layout, home, OG image)
   api/chat              "Ask my AI" (Claude or demo responder), rate-limited
   api/contact           contact form (validation, honeypot, rate limit, Resend)
   global-not-found.tsx  bilingual 404 for unknown URLs
@@ -81,7 +79,7 @@ components/
   ui/                   design-system primitives (Button, Section, Reveal, Tag…)
 data/                   all editable content (bilingual)
 i18n/                   locales, dictionaries, locale helpers
-lib/                    content helpers, SEO, GitHub, theme, validation, rate limiting, chat
+lib/                    content helpers, SEO, theme, tech logos, validation, rate limiting, chat
 proxy.ts                locale redirect for "/" and unprefixed paths
 types/                  content and API contracts
 ```
@@ -94,4 +92,4 @@ Design tokens (colors, fonts, display size, animations) are defined in `app/glob
 2. Add the environment variables you need in Project → Settings → Environment Variables.
 3. Set `NEXT_PUBLIC_SITE_URL` once you have a custom domain.
 
-The home page is static and revalidates hourly (for GitHub data); API routes run on demand.
+Pages are fully static; API routes run on demand.

@@ -1,16 +1,14 @@
-import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
-import type { Locale } from "@/i18n/config";
 
 /**
  * Renders the small subset of formatting the assistant is allowed to use:
- * paragraphs, "•"/"-" bullets, **bold**, and links (http(s) or /projects/…).
+ * paragraphs, "•"/"-" bullets, **bold**, and http(s) links.
  * No HTML is ever injected.
  */
 
-const INLINE = /(\*\*[^*]+\*\*|https?:\/\/[^\s)]+|(?:\/(?:en|fr))?\/projects\/[a-z0-9-]+)/g;
+const INLINE = /(\*\*[^*]+\*\*|https?:\/\/[^\s)]+)/g;
 
-function renderInline(text: string, locale: Locale): ReactNode[] {
+function renderInline(text: string): ReactNode[] {
   return text.split(INLINE).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
@@ -27,19 +25,11 @@ function renderInline(text: string, locale: Locale): ReactNode[] {
         </a>
       );
     }
-    if (/^(\/(en|fr))?\/projects\//.test(part)) {
-      const href = part.startsWith("/projects/") ? `/${locale}${part}` : part;
-      return (
-        <Link key={index} href={href} className={linkClass}>
-          {part}
-        </Link>
-      );
-    }
     return <Fragment key={index}>{part}</Fragment>;
   });
 }
 
-export function MessageContent({ text, locale }: { text: string; locale: Locale }) {
+export function MessageContent({ text }: { text: string }) {
   const blocks = text.split(/\n{2,}/);
   return (
     <div className="space-y-2.5">
@@ -54,7 +44,7 @@ export function MessageContent({ text, locale }: { text: string; locale: Locale 
                   <span aria-hidden className="text-accent">
                     ›
                   </span>
-                  <span>{renderInline(line.replace(/^\s*[•\-*]\s+/, ""), locale)}</span>
+                  <span>{renderInline(line.replace(/^\s*[•\-*]\s+/, ""))}</span>
                 </li>
               ))}
             </ul>
@@ -65,7 +55,7 @@ export function MessageContent({ text, locale }: { text: string; locale: Locale 
             {lines.map((line, i) => (
               <Fragment key={i}>
                 {i > 0 && <br />}
-                {renderInline(line, locale)}
+                {renderInline(line)}
               </Fragment>
             ))}
           </p>

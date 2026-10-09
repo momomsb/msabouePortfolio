@@ -21,32 +21,19 @@ export type ProjectCategory = "AI" | "Data" | "Backend" | "Frontend" | "Big Data
 export interface ProjectData {
   title: Text;
   slug: string;
-  /** One or two sentences shown on cards. */
+  /** Short presentation shown on the card. */
   description: Text;
   /** A project can belong to several filters (e.g. AI + Data). */
   categories: ProjectCategory[];
   technologies: string[];
-  /** Path under /public or remote URL. `null` renders a generated visual. */
+  /** Cover screenshot under /public. `null` renders a generated visual. */
   image: string | null;
-  github: string | null;
-  demo: string | null;
+  /** All screenshots, opened in a fullscreen viewer from the card. */
+  gallery?: Array<{ src: string; alt: Text; width: number; height: number }>;
+  /** Shown as the large card above the grid. */
   featured: boolean;
-  /** Omit when the date isn't documented: the UI simply hides it. */
-  year?: number;
   /** Short context line, e.g. "Internship · Attijariwafa Bank". */
   context?: Text;
-  /** Key features or concepts, shown as tags. */
-  highlights?: Text[];
-  /** Heading above the highlights (default "Highlights"). */
-  highlightsTitle?: Text;
-  /** Extra public repositories for multi-repo projects (e.g. frontend + backend). */
-  repositories?: Array<{ label: Text; url: string }>;
-  /** Ordered pipeline stages, rendered as a flow on the featured card. */
-  pipeline?: Text[];
-  /** Screenshots under /public, shown in the case study gallery. */
-  gallery?: Array<{ src: string; alt: Text; width: number; height: number }>;
-  /** When true, the card links to /projects/[slug]. */
-  hasCaseStudy?: boolean;
 }
 
 /** Filter keys. Display labels live in the dictionaries. */
@@ -135,8 +122,6 @@ export interface ExperienceData {
   responsibilities: Text[];
   /** Measured outcomes. Leave empty until real results are documented. */
   results: Text[];
-  /** Related project slug, links to its case study. */
-  projectSlug?: string;
 }
 
 export type EducationKind = "degree" | "preparatory" | "secondary" | "training";
@@ -174,74 +159,6 @@ export interface NavItemData {
   sectionId: string;
 }
 
-interface SectionBase {
-  /** Anchor id, unique within the case study. */
-  id: string;
-  title: Text;
-}
-
-/** Prose. An empty `body` means "not documented yet": hidden in production. */
-export interface TextSectionData extends SectionBase {
-  kind: "text";
-  body: Text[];
-  bullets?: Text[];
-}
-
-/** Layered architecture diagram, in data-flow order. */
-export interface ArchitectureSectionData extends SectionBase {
-  kind: "architecture";
-  body: Text[];
-  layers: ArchitectureLayerData[];
-}
-
-/** Grouped feature lists (e.g. "Kafka management": […]). */
-export interface FeaturesSectionData extends SectionBase {
-  kind: "features";
-  body?: Text[];
-  groups: Array<{ title: Text; items: Text[] }>;
-}
-
-/** Name → role table (technologies, layers…). */
-export interface StackSectionData extends SectionBase {
-  kind: "stack";
-  items: Array<{ name: Text; role: Text }>;
-}
-
-/** Cards with a short name, a full name and a description (e.g. technical indicators). */
-export interface IndicatorsSectionData extends SectionBase {
-  kind: "indicators";
-  body: Text[];
-  indicators: TechnicalIndicatorData[];
-}
-
-/** Screenshots from the project's `gallery`. */
-export interface GallerySectionData extends SectionBase {
-  kind: "gallery";
-  body?: Text[];
-}
-
-export type CaseStudySectionData =
-  TextSectionData | ArchitectureSectionData | FeaturesSectionData | StackSectionData | IndicatorsSectionData | GallerySectionData;
-
-export interface TechnicalIndicatorData {
-  name: string;
-  fullName: Text;
-  description: Text;
-}
-
-export interface ArchitectureLayerData {
-  title: Text;
-  nodes: Array<{ label: Text; detail: Text }>;
-}
-
-export interface CaseStudyData {
-  /** Must match a project slug. */
-  slug: string;
-  tagline: Text;
-  /** Rendered in this order, numbered, with a table of contents. */
-  sections: CaseStudySectionData[];
-}
-
 /* ── Resolved (single-locale) shapes used by components ─────────── */
 export type Project = Resolved<ProjectData>;
 export type Certification = Resolved<CertificationData>;
@@ -250,6 +167,3 @@ export type EngineeringDomain = Resolved<EngineeringDomainData>;
 export type Experience = Resolved<ExperienceData>;
 export type Education = Resolved<EducationData>;
 export type NavItem = Resolved<NavItemData>;
-export type CaseStudy = Resolved<CaseStudyData>;
-export type CaseStudySection = Resolved<CaseStudySectionData>;
-export type ArchitectureLayer = Resolved<ArchitectureLayerData>;

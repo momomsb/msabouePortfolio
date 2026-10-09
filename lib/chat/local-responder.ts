@@ -55,29 +55,16 @@ const intents: Intent[] = [
     },
   },
   {
-    keywords: ["project", "stock", "analyst", "main", "agent", "case study", "projet", "principal", "bourse", "étude de cas"],
+    keywords: ["project", "stock", "analyst", "main", "agent", "projet", "principal", "bourse"],
     answer: (content, locale) => {
       const project = getFeaturedProject(content);
       if (!project) return fr(locale) ? "Les projets arrivent bientôt." : "Projects will be listed here soon.";
-      const year = project.year ? ` (${project.year})` : "";
       return [
         fr(locale)
-          ? `Son projet IA principal est **${project.title}**${year}. ${project.description}`
-          : `His main AI project is **${project.title}**${year}. ${project.description}`,
-        project.highlights?.length
-          ? fr(locale)
-            ? `Il s'appuie notamment sur${colon(locale)} ${project.highlights.join(", ")}.`
-            : `It works with: ${project.highlights.join(", ")}.`
-          : "",
+          ? `Son projet IA principal est **${project.title}**. ${project.description}`
+          : `His main AI project is **${project.title}**. ${project.description}`,
         `${fr(locale) ? "Technologies" : "Built with"}${colon(locale)} ${project.technologies.join(", ")}.`,
-        project.hasCaseStudy
-          ? fr(locale)
-            ? `L'étude de cas complète${colon(locale)} /${locale}/projects/${project.slug}`
-            : `Full case study: /${locale}/projects/${project.slug}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n");
+      ].join("\n\n");
     },
   },
   {

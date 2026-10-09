@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useId, useState, type PointerEvent } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ContentPlaceholder } from "@/components/ui/content-placeholder";
 import { TagList } from "@/components/ui/tag";
 import { useI18n } from "@/i18n/locale-provider";
@@ -137,16 +136,6 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
                 </div>
               ) : (
                 <ContentPlaceholder file="experience.ts">Add measured results for this experience.</ContentPlaceholder>
-              )}
-
-              {experience.projectSlug && (
-                <Link
-                  href={`/${locale}/projects/${experience.projectSlug}`}
-                  className="group inline-flex items-center gap-2 text-sm font-medium text-accent"
-                >
-                  {t.readCaseStudy}
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
-                </Link>
               )}
             </div>
           </div>

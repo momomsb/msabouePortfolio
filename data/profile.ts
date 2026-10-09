@@ -1,4 +1,4 @@
-import type { Text } from "@/i18n/config";
+import type { Locale, Text } from "@/i18n/config";
 import type { Language } from "@/types";
 
 /**
@@ -49,10 +49,13 @@ export const profile = {
   /** Portrait under /public. `null` hides it. */
   photo: "/images/mohamed-msaboue.png" as string | null,
   /**
-   * Path to the CV under /public, e.g. "/cv/mohamed-msaboue-cv.pdf".
-   * `null` hides the "Download CV" button until the file is added.
+   * CV files under /public/cv, one per language. "Download CV" opens a menu
+   * to pick one; an empty list hides the button.
    */
-  cvPath: null as string | null,
+  cv: [
+    { language: "fr", path: "/cv/CV_Msaboue_Mohamed_FR.pdf" },
+    { language: "en", path: "/cv/CV_Msaboue_Mohamed_EN.pdf" },
+  ] as Array<{ language: Locale; path: string }>,
 };
 
 export type ProfileData = typeof profile;

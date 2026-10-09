@@ -1,10 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
 import { useRef, useState, type KeyboardEvent } from "react";
 import {
-  ArrowRight,
   BarChart3,
   Box,
   Brain,
@@ -31,8 +29,8 @@ export interface TechItem {
   logo: BrandLogo | null;
   icon: GenericIcon;
   domains: string[];
-  projects: Array<{ title: string; slug: string; hasCaseStudy: boolean }>;
-  experiences: string[];
+  /** Experiences and projects where the tool is used. */
+  usedIn: string[];
 }
 
 export interface TechGroup {
@@ -63,7 +61,7 @@ const ALL = "all";
 
 /** Category tabs + logo tiles; hovering, focusing or tapping a tile shows where the tool is used. */
 export function TechExplorer({ groups }: { groups: TechGroup[] }) {
-  const { locale, dict } = useI18n();
+  const { dict } = useI18n();
   const t = dict.techStack;
   const tabs = [
     ...groups.map((group) => ({ id: group.id, label: group.title, count: group.items.length })),
@@ -199,27 +197,7 @@ export function TechExplorer({ groups }: { groups: TechGroup[] }) {
                 )}
                 <p>
                   <span className="mr-2 label-mono text-subtle">{t.usedIn}</span>
-                  {inspected.projects.length === 0 && inspected.experiences.length === 0 ? (
-                    t.notDocumented
-                  ) : (
-                    <>
-                      {inspected.experiences.join(" · ")}
-                      {inspected.experiences.length > 0 && inspected.projects.length > 0 && " · "}
-                      {inspected.projects.map((project, index) => (
-                        <span key={project.slug}>
-                          {index > 0 && " · "}
-                          {project.hasCaseStudy ? (
-                            <Link href={`/${locale}/projects/${project.slug}`} className="group inline-flex items-center gap-1 text-accent">
-                              {project.title}
-                              <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                            </Link>
-                          ) : (
-                            <span className="text-fg">{project.title}</span>
-                          )}
-                        </span>
-                      ))}
-                    </>
-                  )}
+                  {inspected.usedIn.length === 0 ? t.notDocumented : <span className="text-fg">{inspected.usedIn.join(" · ")}</span>}
                 </p>
               </div>
             </div>

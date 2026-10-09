@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { ArrowDownRight, Download } from "lucide-react";
+import { ArrowDownRight } from "lucide-react";
+import { CvMenu } from "@/components/sections/hero/cv-menu";
 import { DataNetwork } from "@/components/sections/hero/data-network";
 import { ButtonLink } from "@/components/ui/button";
-import { ContentPlaceholder } from "@/components/ui/content-placeholder";
 import { StatusDot } from "@/components/ui/tag";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { getI18n } from "@/i18n/server";
@@ -93,7 +93,7 @@ export async function Hero() {
             {profile.tagline}
           </p>
 
-          <div className="mt-10 flex animate-fade-in flex-wrap items-center gap-3" style={delay(0.6)}>
+          <div className="relative z-20 mt-10 flex animate-fade-in flex-wrap items-center gap-3" style={delay(0.6)}>
             <ButtonLink href={`/${locale}#projects`} size="lg">
               {dict.hero.explore}
               <ArrowDownRight
@@ -101,18 +101,8 @@ export async function Hero() {
                 aria-hidden
               />
             </ButtonLink>
-            {profile.cvPath && (
-              <ButtonLink href={profile.cvPath} variant="secondary" size="lg" download>
-                <Download className="size-4" aria-hidden />
-                {dict.hero.downloadCv}
-              </ButtonLink>
-            )}
+            <CvMenu files={profile.cv} />
           </div>
-          {!profile.cvPath && (
-            <ContentPlaceholder file="profile.ts" className="mt-4 max-w-md">
-              Add your CV under /public/cv and set `cvPath` to show &quot;Download CV&quot;.
-            </ContentPlaceholder>
-          )}
         </div>
 
         {profile.photo && <Portrait src={profile.photo} profile={profile} dict={dict} />}

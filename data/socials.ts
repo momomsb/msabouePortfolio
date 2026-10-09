@@ -24,6 +24,3 @@ export const socials: SocialLink[] = [
     handle: "momomsb",
   },
 ];
-
-/** GitHub username used by the "Building in public" section. */
-export const githubUsername: string | null = "momomsb";

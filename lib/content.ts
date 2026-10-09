@@ -1,4 +1,3 @@
-import { caseStudies } from "@/data/case-studies";
 import { certifications } from "@/data/certifications";
 import { education } from "@/data/education";
 import { experiences } from "@/data/experience";
@@ -8,7 +7,7 @@ import { projects } from "@/data/projects";
 import { engineeringDomains, techStack } from "@/data/skills";
 import { socials } from "@/data/socials";
 import { localize, type Locale } from "@/i18n/config";
-import type { Project, SocialLink } from "@/types";
+import type { SocialLink } from "@/types";
 
 /**
  * Read-side access to `data/`, resolved for one locale.
@@ -21,7 +20,6 @@ function build(locale: Locale) {
     navigation: localize(navigation, locale),
     experiences: localize(experiences, locale),
     projects: localize(projects, locale),
-    caseStudies: localize(caseStudies, locale),
     certifications: localize(certifications, locale),
     education: localize(education, locale),
     engineeringDomains: localize(engineeringDomains, locale),
@@ -46,31 +44,8 @@ export function getFeaturedProject(content: Content) {
   return content.projects.find((project) => project.featured) ?? null;
 }
 
-export function getProject(content: Content, slug: string) {
-  return content.projects.find((project) => project.slug === slug) ?? null;
-}
-
-export function getCaseStudy(content: Content, slug: string) {
-  return content.caseStudies.find((study) => study.slug === slug) ?? null;
-}
-
-/** Slugs with both a project and a case study (locale-independent). */
-export function getCaseStudySlugs() {
-  return caseStudies.filter((study) => projects.some((project) => project.slug === study.slug)).map((study) => study.slug);
-}
-
 export function getSpotlightCertification(content: Content) {
   return content.certifications.find((cert) => cert.featured) ?? null;
-}
-
-export function getExperienceForProject(content: Content, slug: string) {
-  return content.experiences.find((experience) => experience.projectSlug === slug) ?? null;
-}
-
-/** Every public repository of a project: the `repositories` list, or the single `github` link. */
-export function getProjectRepositories(project: Project, codeLabel: string) {
-  if (project.repositories?.length) return project.repositories;
-  return project.github ? [{ label: codeLabel, url: project.github }] : [];
 }
 
 export type AvailableSocialLink = SocialLink & { href: string };

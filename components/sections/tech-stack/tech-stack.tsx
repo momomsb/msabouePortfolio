@@ -20,12 +20,10 @@ export async function TechStack() {
         logo: getBrandLogo(skill.logo),
         icon: skill.icon ?? "code",
         domains: content.engineeringDomains.filter((domain) => domain.technologies.includes(skill.name)).map((domain) => domain.title),
-        projects: usage.projects.map((project) => ({
-          title: project.title,
-          slug: project.slug,
-          hasCaseStudy: Boolean(project.hasCaseStudy),
-        })),
-        experiences: usage.experiences.map((experience) => `${dict.experience.types[experience.type]} · ${experience.company}`),
+        usedIn: [
+          ...usage.experiences.map((experience) => `${dict.experience.types[experience.type]} · ${experience.company}`),
+          ...usage.projects.map((project) => project.title),
+        ],
       };
     }),
   }));

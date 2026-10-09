@@ -44,7 +44,6 @@ export const experiences: ExperienceData[] = [
     ],
     // TODO: add measured outcomes (accuracy, time saved, adoption, demo feedback…).
     results: [],
-    projectSlug: "ai-stock-analyst",
   },
   {
     id: "mtnma-full-stack",

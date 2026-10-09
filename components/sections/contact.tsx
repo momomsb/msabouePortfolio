@@ -28,7 +28,7 @@ export async function Contact() {
           <p className="mb-5 flex items-center gap-3 label-mono text-accent">
             <span aria-hidden className="inline-block size-1.5 rounded-[1px] bg-accent" />
             <span>
-              <span className="text-subtle">[09]</span> {t.tag}
+              <span className="text-subtle">[08]</span> {t.tag}
             </span>
           </p>
           <h2 id="contact-title" className="text-4xl font-medium tracking-tight text-fg sm:text-5xl lg:text-6xl">
