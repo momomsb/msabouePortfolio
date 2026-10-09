@@ -1,27 +1,30 @@
 import { BookOpen, GraduationCap, MapPin, School, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
-import { education } from "@/data/education";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { getI18n } from "@/i18n/server";
 import { cn, formatDateRange } from "@/lib/utils";
 import type { Education as EducationEntry, EducationKind } from "@/types";
 
-const kinds: Record<EducationKind, { label: string; icon: LucideIcon }> = {
-  degree: { label: "Engineering degree", icon: GraduationCap },
-  preparatory: { label: "Preparatory classes", icon: BookOpen },
-  secondary: { label: "Baccalaureate", icon: School },
-  training: { label: "Training", icon: BookOpen },
+const icons: Record<EducationKind, LucideIcon> = {
+  degree: GraduationCap,
+  preparatory: BookOpen,
+  secondary: School,
+  training: BookOpen,
 };
 
-export function Education() {
-  const [current, ...previous] = education;
+export async function Education() {
+  const { locale, dict, content } = await getI18n();
+  const [current, ...previous] = content.education;
 
   return (
     <Section id="education">
-      <SectionHeader id="education" index={7} tag="Education · Foundations" title="Where the engineering is learned." />
+      <SectionHeader id="education" index={7} tag={dict.education.tag} title={dict.education.title} />
 
       {current && (
         <Reveal>
-          <EducationCard entry={current} featured />
+          <EducationCard entry={current} locale={locale} dict={dict} featured />
         </Reveal>
       )}
 
@@ -29,7 +32,7 @@ export function Education() {
         <ol className="mt-4 grid gap-4 md:grid-cols-2">
           {previous.map((entry, index) => (
             <Reveal as="li" key={entry.id} delay={index * 0.06} className="h-full">
-              <EducationCard entry={entry} />
+              <EducationCard entry={entry} locale={locale} dict={dict} />
             </Reveal>
           ))}
         </ol>
@@ -38,9 +41,17 @@ export function Education() {
   );
 }
 
-function EducationCard({ entry, featured = false }: { entry: EducationEntry; featured?: boolean }) {
-  const { label, icon: Icon } = kinds[entry.kind];
-  const ongoing = entry.end === null;
+interface EducationCardProps {
+  entry: EducationEntry;
+  locale: Locale;
+  dict: Dictionary;
+  featured?: boolean;
+}
+
+function EducationCard({ entry, locale, dict, featured = false }: EducationCardProps) {
+  const Icon = icons[entry.kind];
+  const label = dict.education.kinds[entry.kind];
+  const ongoing = Boolean(entry.ongoing);
 
   return (
     <article className={cn("relative h-full overflow-hidden panel", featured && "brackets")}>
@@ -80,7 +91,7 @@ function EducationCard({ entry, featured = false }: { entry: EducationEntry; fea
             {entry.shortName && <span className="text-subtle"> · {entry.shortName}</span>}
           </p>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-subtle">
-            {entry.start && <span>{formatDateRange(entry.start, entry.end ?? null)}</span>}
+            {entry.start && <span>{formatDateRange(entry.start, entry.end ?? null, locale)}</span>}
             {entry.location && (
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="size-3.5" aria-hidden />

@@ -4,16 +4,19 @@ import { SignalVisual } from "@/components/projects/signal-visual";
 import { Reveal } from "@/components/ui/reveal";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { TagList } from "@/components/ui/tag";
+import { getI18n } from "@/i18n/server";
 import type { Project } from "@/types";
 
-export function FeaturedProjectCard({ project }: { project: Project }) {
+export async function FeaturedProjectCard({ project }: { project: Project }) {
+  const { dict } = await getI18n();
+  const t = dict.projects;
   return (
     <Reveal>
       <SpotlightCard className="brackets overflow-hidden rounded-3xl border border-line-strong bg-surface">
         <article className="grid lg:grid-cols-2">
           <div className="flex flex-col p-6 sm:p-10">
             <p className="flex items-center gap-3 label-mono text-accent">
-              Featured project {project.year && <span className="text-subtle">· {project.year}</span>}
+              {t.featured} {project.year && <span className="text-subtle">· {project.year}</span>}
             </p>
             <h3 className="mt-5 text-4xl font-medium tracking-tight text-fg sm:text-5xl">{project.title}</h3>
             {project.context && <p className="mt-3 font-mono text-xs text-subtle">{project.context}</p>}
@@ -21,13 +24,13 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
 
             {project.highlights && (
               <div className="mt-8">
-                <p className="mb-3 label-mono text-subtle">{project.highlightsTitle ?? "Highlights"}</p>
+                <p className="mb-3 label-mono text-subtle">{project.highlightsTitle ?? t.highlights}</p>
                 <TagList items={project.highlights} tone="accent" />
               </div>
             )}
 
             <div className="mt-6">
-              <p className="mb-3 label-mono text-subtle">Stack</p>
+              <p className="mb-3 label-mono text-subtle">{t.stack}</p>
               <TagList items={project.technologies} />
             </div>
 
@@ -50,12 +53,12 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
               <>
                 <div className="relative flex items-center justify-between px-6 pt-6 font-mono text-[0.6875rem] text-subtle sm:px-8">
                   <span>{project.slug}.system</span>
-                  <span>{project.categories.join(" · ")}</span>
+                  <span>{project.categories.map((category) => t.categories[category]).join(" · ")}</span>
                 </div>
                 <SignalVisual seed={2} className="relative h-56 w-full sm:h-64" />
                 {project.pipeline && (
                   <ol
-                    aria-label="Pipeline"
+                    aria-label={t.pipeline}
                     className="relative flex flex-wrap items-center gap-x-2 gap-y-2 border-t border-line px-6 py-5 font-mono text-[0.6875rem] sm:px-8"
                   >
                     {project.pipeline.map((step, index) => (

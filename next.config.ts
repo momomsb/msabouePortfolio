@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  experimental: {
+    // app/global-not-found.tsx: 404 for URLs outside the [lang] routes.
+    globalNotFound: true,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },

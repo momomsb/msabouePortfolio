@@ -11,11 +11,13 @@ interface FilterBarProps<T extends string> {
   onChange: (value: T) => void;
   /** Item count per option; options with 0 items are disabled. */
   counts?: Partial<Record<T, number>>;
+  /** Display label for an option (defaults to the option value). */
+  getLabel?: (option: T) => string;
   className?: string;
 }
 
 /** Toggle-button group with a sliding active indicator. */
-export function FilterBar<T extends string>({ label, options, value, onChange, counts, className }: FilterBarProps<T>) {
+export function FilterBar<T extends string>({ label, options, value, onChange, counts, getLabel, className }: FilterBarProps<T>) {
   const indicatorId = useId();
 
   return (
@@ -46,7 +48,7 @@ export function FilterBar<T extends string>({ label, options, value, onChange, c
                 />
               )}
               <span className="relative">
-                {option}
+                {getLabel ? getLabel(option) : option}
                 {count !== undefined && <span className={cn("ml-1.5", active ? "text-ink/60" : "text-subtle")}>{count}</span>}
               </span>
             </button>

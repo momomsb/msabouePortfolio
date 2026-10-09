@@ -3,10 +3,13 @@ import { CertificationActions } from "@/components/certifications/certification-
 import { IssuerMark } from "@/components/certifications/issuer-mark";
 import { Reveal } from "@/components/ui/reveal";
 import { TagList } from "@/components/ui/tag";
+import { getI18n } from "@/i18n/server";
 import { formatPartialDate } from "@/lib/utils";
 import type { Certification } from "@/types";
 
-export function CertificationSpotlight({ certification }: { certification: Certification }) {
+export async function CertificationSpotlight({ certification }: { certification: Certification }) {
+  const { locale, dict } = await getI18n();
+  const t = dict.certifications;
   return (
     <Reveal className="mb-12">
       <article className="brackets relative overflow-hidden rounded-3xl border border-line-strong bg-surface">
@@ -17,7 +20,7 @@ export function CertificationSpotlight({ certification }: { certification: Certi
             <div className="flex justify-center lg:col-span-3">
               <Image
                 src={certification.image}
-                alt={`${certification.title} badge`}
+                alt={`${certification.title}, ${t.badgeAlt}`}
                 width={200}
                 height={200}
                 className="size-40 object-contain drop-shadow-[0_0_40px_rgb(45_226_255/0.25)] sm:size-48"
@@ -25,7 +28,7 @@ export function CertificationSpotlight({ certification }: { certification: Certi
             </div>
           )}
           <div className={certification.image ? "lg:col-span-5" : "lg:col-span-7"}>
-            <p className="label-mono text-accent">Certification spotlight</p>
+            <p className="label-mono text-accent">{t.spotlight}</p>
             <h3 className="mt-5 text-3xl font-medium tracking-tight text-fg sm:text-4xl">{certification.title}</h3>
             {certification.skills.length > 0 && <TagList items={certification.skills} className="mt-6" tone="accent" />}
             <div className="mt-8">
@@ -36,19 +39,21 @@ export function CertificationSpotlight({ certification }: { certification: Certi
             <div className="flex items-center gap-4">
               {!certification.image && <IssuerMark issuer={certification.issuer} size="lg" />}
               <div>
-                <dt className="label-mono text-subtle">Issued by</dt>
+                <dt className="label-mono text-subtle">{t.issuedBy}</dt>
                 <dd className="mt-1 text-lg text-fg">{certification.issuer}</dd>
               </div>
             </div>
-            <div>
-              <dt className="label-mono text-subtle">Issued</dt>
-              <dd className="mt-1 text-lg text-fg">
-                <time dateTime={certification.date}>{formatPartialDate(certification.date)}</time>
-              </dd>
-            </div>
+            {certification.date && (
+              <div>
+                <dt className="label-mono text-subtle">{t.issued}</dt>
+                <dd className="mt-1 text-lg text-fg">
+                  <time dateTime={certification.date}>{formatPartialDate(certification.date, locale)}</time>
+                </dd>
+              </div>
+            )}
             {certification.credentialId && (
               <div>
-                <dt className="label-mono text-subtle">Credential ID</dt>
+                <dt className="label-mono text-subtle">{t.credentialId}</dt>
                 <dd className="mt-1 font-mono text-sm break-all text-fg">{certification.credentialId}</dd>
               </div>
             )}

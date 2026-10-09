@@ -1,9 +1,12 @@
+import { defaultLocale, hasLocale, type Locale } from "@/i18n/config";
+
 /**
  * Minimal runtime validation for API payloads. Never trust client input:
- * every route parses `unknown` through these helpers.
+ * every route parses `unknown` through these helpers. Errors are field keys;
+ * the client turns them into localized messages.
  */
 
-export type ValidationResult<T> = { ok: true; data: T } | { ok: false; errors: Record<string, string> };
+export type ValidationResult<T, F extends string = string> = { ok: true; data: T } | { ok: false; errors: F[] };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -24,14 +27,16 @@ export interface ContactPayload {
   website: string;
 }
 
+export type ContactField = "name" | "email" | "message";
+
 export const CONTACT_LIMITS = {
   name: { min: 2, max: 100 },
   email: { max: 254 },
   message: { min: 10, max: 5000 },
 } as const;
 
-export function validateContact(input: unknown): ValidationResult<ContactPayload> {
-  if (!isRecord(input)) return { ok: false, errors: { form: "Invalid request." } };
+export function validateContact(input: unknown): ValidationResult<ContactPayload, ContactField | "form"> {
+  if (!isRecord(input)) return { ok: false, errors: ["form"] };
 
   const data: ContactPayload = {
     name: readString(input, "name"),
@@ -40,20 +45,13 @@ export function validateContact(input: unknown): ValidationResult<ContactPayload
     website: readString(input, "website"),
   };
 
-  const errors: Record<string, string> = {};
+  const errors: ContactField[] = [];
   const { name, email, message } = CONTACT_LIMITS;
+  if (data.name.length < name.min || data.name.length > name.max) errors.push("name");
+  if (!EMAIL_PATTERN.test(data.email) || data.email.length > email.max) errors.push("email");
+  if (data.message.length < message.min || data.message.length > message.max) errors.push("message");
 
-  if (data.name.length < name.min || data.name.length > name.max) {
-    errors.name = `Please enter your name (${name.min}–${name.max} characters).`;
-  }
-  if (!EMAIL_PATTERN.test(data.email) || data.email.length > email.max) {
-    errors.email = "Please enter a valid email address.";
-  }
-  if (data.message.length < message.min || data.message.length > message.max) {
-    errors.message = `Your message should be ${message.min}–${message.max} characters.`;
-  }
-
-  return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true, data };
+  return errors.length > 0 ? { ok: false, errors } : { ok: true, data };
 }
 
 export interface ChatTurn {
@@ -64,10 +62,8 @@ export interface ChatTurn {
 export const CHAT_LIMITS = { maxTurns: 12, maxChars: 800 } as const;
 
 /** Accepts a short alternating history that ends with a user question. */
-export function validateChat(input: unknown): ValidationResult<ChatTurn[]> {
-  if (!isRecord(input) || !Array.isArray(input.messages)) {
-    return { ok: false, errors: { messages: "Invalid request." } };
-  }
+export function validateChat(input: unknown): ValidationResult<{ turns: ChatTurn[]; locale: Locale }, "messages"> {
+  if (!isRecord(input) || !Array.isArray(input.messages)) return { ok: false, errors: ["messages"] };
 
   const turns: ChatTurn[] = [];
   for (const item of input.messages.slice(-CHAT_LIMITS.maxTurns)) {
@@ -82,8 +78,8 @@ export function validateChat(input: unknown): ValidationResult<ChatTurn[]> {
   }
 
   while (turns[0]?.role === "assistant") turns.shift();
-  if (turns.length === 0 || turns.at(-1)?.role !== "user") {
-    return { ok: false, errors: { messages: "Ask a question to get an answer." } };
-  }
-  return { ok: true, data: turns };
+  if (turns.length === 0 || turns.at(-1)?.role !== "user") return { ok: false, errors: ["messages"] };
+
+  const locale = typeof input.locale === "string" && hasLocale(input.locale) ? input.locale : defaultLocale;
+  return { ok: true, data: { turns, locale } };
 }

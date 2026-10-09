@@ -6,11 +6,11 @@ import type { ArchitectureLayer } from "@/types";
  * Layered system diagram rendered in HTML/CSS (crisp at any size, readable by
  * screen readers as an ordered list). Horizontal on desktop, vertical on mobile.
  */
-export function ArchitectureDiagram({ layers }: { layers: ArchitectureLayer[] }) {
+export function ArchitectureDiagram({ layers, label, caption }: { layers: ArchitectureLayer[]; label: string; caption: string }) {
   return (
     <figure className="relative overflow-hidden panel p-4 sm:p-6">
       <div aria-hidden className="absolute inset-0 bg-grid opacity-50" />
-      <ol aria-label="System architecture, in data-flow order" className="relative flex flex-col items-stretch lg:flex-row">
+      <ol aria-label={label} className="relative flex flex-col items-stretch lg:flex-row">
         {layers.map((layer, index) => (
           <Fragment key={layer.title}>
             {index > 0 && <Connector />}
@@ -36,9 +36,7 @@ export function ArchitectureDiagram({ layers }: { layers: ArchitectureLayer[] })
           </Fragment>
         ))}
       </ol>
-      <figcaption className="relative mt-5 border-t border-line pt-4 font-mono text-[0.6875rem] text-subtle">
-        Read in data-flow order, layer by layer. Highlighted nodes are each layer&apos;s core component.
-      </figcaption>
+      <figcaption className="relative mt-5 border-t border-line pt-4 font-mono text-[0.6875rem] text-subtle">{caption}</figcaption>
     </figure>
   );
 }

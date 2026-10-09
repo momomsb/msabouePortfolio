@@ -6,8 +6,7 @@ import { useEffect, useRef, type KeyboardEvent } from "react";
 import { ArrowUpRight, X } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { SocialIcon } from "@/components/ui/brand-icons";
-import { navigation } from "@/data/navigation";
-import { profile } from "@/data/profile";
+import { useI18n } from "@/i18n/locale-provider";
 import { getAvailableSocials, socialLinkProps } from "@/lib/content";
 import { cn, pad } from "@/lib/utils";
 
@@ -20,6 +19,7 @@ interface MobileMenuProps {
 const socials = getAvailableSocials();
 
 export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
+  const { locale, dict, content } = useI18n();
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
           id="mobile-menu"
           role="dialog"
           aria-modal="true"
-          aria-label="Site navigation"
+          aria-label={dict.nav.siteNavigation}
           onKeyDown={handleKeyDown}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -79,27 +79,27 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close menu"
+              aria-label={dict.nav.closeMenu}
               className="grid size-10 place-items-center rounded-full border border-line-strong bg-raised/60 text-fg transition-colors hover:border-accent/50"
             >
               <X className="size-4.5" aria-hidden />
             </button>
           </div>
 
-          <nav aria-label="Mobile" className="relative flex-1 px-4 pt-6 pb-10 sm:px-6">
+          <nav aria-label={dict.nav.mobile} className="relative flex-1 px-4 pt-6 pb-10 sm:px-6">
             <ul className="flex flex-col">
-              {navigation.map((item, index) => {
+              {content.navigation.map((item, index) => {
                 const active = activeSection === item.sectionId;
                 return (
                   <motion.li
-                    key={item.href}
+                    key={item.sectionId}
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.05 + index * 0.04, ease: [0.16, 1, 0.3, 1] }}
                     className="border-b border-line/70"
                   >
                     <Link
-                      href={item.href}
+                      href={`/${locale}#${item.sectionId}`}
                       onClick={onClose}
                       aria-current={active ? "location" : undefined}
                       className="group flex items-baseline gap-4 py-4"
@@ -126,11 +126,11 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
               className="mt-10 flex flex-col gap-6"
             >
               <Link
-                href="/#contact"
+                href={`/${locale}#contact`}
                 onClick={onClose}
                 className="inline-flex items-center gap-2 self-start rounded-full bg-accent px-6 py-3 font-medium text-ink"
               >
-                Let&apos;s talk <ArrowUpRight className="size-4" aria-hidden />
+                {dict.nav.letsTalk} <ArrowUpRight className="size-4" aria-hidden />
               </Link>
               {socials.length > 0 && (
                 <ul className="flex gap-3">
@@ -149,7 +149,7 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
                 </ul>
               )}
               <p className="label-mono text-subtle">
-                {profile.role} · {profile.location}
+                {content.profile.role} · {content.profile.location}
               </p>
             </motion.div>
           </nav>

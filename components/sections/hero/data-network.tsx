@@ -26,8 +26,12 @@ interface Packet {
 }
 
 const LINK_DISTANCE = 150;
-const ACCENT = "45, 226, 255";
-const VIOLET = "143, 128, 255";
+
+/** RGB triplets per theme (canvas can't read CSS variables directly). */
+const PALETTES = {
+  dark: { accent: "45, 226, 255", violet: "143, 128, 255", node: "231, 237, 244", linkAlpha: 0.16, nodeAlpha: 0.35 },
+  light: { accent: "14, 116, 144", violet: "91, 75, 214", node: "15, 23, 42", linkAlpha: 0.22, nodeAlpha: 0.4 },
+};
 
 export function DataNetwork({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -102,6 +106,9 @@ export function DataNetwork({ className }: { className?: string }) {
     }
 
     function draw() {
+      const palette = document.documentElement.getAttribute("data-theme") === "light" ? PALETTES.light : PALETTES.dark;
+      const ACCENT = palette.accent;
+      const VIOLET = palette.violet;
       ctx!.clearRect(0, 0, width, height);
 
       // Links
@@ -111,7 +118,7 @@ export function DataNetwork({ className }: { className?: string }) {
           const b = nodes[j];
           const d = Math.hypot(a.x - b.x, a.y - b.y);
           if (d > LINK_DISTANCE) continue;
-          const alpha = (1 - d / LINK_DISTANCE) * 0.16;
+          const alpha = (1 - d / LINK_DISTANCE) * palette.linkAlpha;
           ctx!.strokeStyle = `rgba(${ACCENT}, ${alpha})`;
           ctx!.lineWidth = 0.6;
           ctx!.beginPath();
@@ -133,7 +140,7 @@ export function DataNetwork({ className }: { className?: string }) {
       // Nodes
       for (const node of nodes) {
         const near = Math.hypot(node.x - pointer.x, node.y - pointer.y) < 180;
-        ctx!.fillStyle = node.hub ? `rgba(${ACCENT}, ${near ? 1 : 0.75})` : `rgba(231, 237, 244, ${near ? 0.8 : 0.35})`;
+        ctx!.fillStyle = node.hub ? `rgba(${ACCENT}, ${near ? 1 : 0.75})` : `rgba(${palette.node}, ${near ? 0.8 : palette.nodeAlpha})`;
         ctx!.beginPath();
         ctx!.arc(node.x, node.y, node.hub ? node.r + 1 : node.r, 0, Math.PI * 2);
         ctx!.fill();
@@ -202,6 +209,10 @@ export function DataNetwork({ className }: { className?: string }) {
       pointer.y = -9999;
     };
 
+    // Redraw immediately when the theme changes (matters when the loop is paused).
+    const themeObserver = new MutationObserver(() => draw());
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
     document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onPointerLeave);
@@ -211,6 +222,7 @@ export function DataNetwork({ className }: { className?: string }) {
       stop();
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
+      themeObserver.disconnect();
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("pointermove", onPointerMove);
       document.documentElement.removeEventListener("pointerleave", onPointerLeave);

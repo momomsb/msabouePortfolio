@@ -2,6 +2,7 @@ import type { SocialLink } from "@/types";
 
 /**
  * `href: null` = not provided yet. Hidden in production, flagged in development.
+ * A phone entry is also supported: { platform: "phone", label: "Phone", href: "tel:+…" }.
  */
 export const socials: SocialLink[] = [
   {
@@ -13,20 +14,14 @@ export const socials: SocialLink[] = [
   {
     platform: "linkedin",
     label: "LinkedIn",
-    href: null, // TODO: e.g. "https://www.linkedin.com/in/<your-handle>"
+    href: "https://www.linkedin.com/in/mohamed-m-8482b72a7/",
+    handle: "Mohamed M'Saboue",
   },
   {
     platform: "github",
     label: "GitHub",
     href: "https://github.com/momomsb",
     handle: "momomsb",
-  },
-  {
-    platform: "phone",
-    label: "Phone",
-    // Public on the site: set to null to hide it.
-    href: "tel:+212610510183",
-    handle: "+212 6 10 51 01 83",
   },
 ];
 

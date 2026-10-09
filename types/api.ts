@@ -8,13 +8,14 @@ export interface ChatResponse {
 }
 
 export interface ApiError {
-  error: string;
+  error: "invalid_request" | "rate_limited";
 }
 
 export type ContactStatus = "sent" | "invalid" | "not_configured" | "rate_limited" | "error";
 
+/** `status` is mapped to a localized message on the client. */
 export interface ContactResponse {
   status: ContactStatus;
-  message: string;
-  errors?: Record<string, string>;
+  /** Invalid field keys when `status` is "invalid". */
+  errors?: string[];
 }

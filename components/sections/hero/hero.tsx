@@ -5,22 +5,24 @@ import { DataNetwork } from "@/components/sections/hero/data-network";
 import { ButtonLink } from "@/components/ui/button";
 import { ContentPlaceholder } from "@/components/ui/content-placeholder";
 import { StatusDot } from "@/components/ui/tag";
-import { education } from "@/data/education";
-import { experiences } from "@/data/experience";
-import { profile } from "@/data/profile";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { getI18n } from "@/i18n/server";
+import type { Content } from "@/lib/content";
 
 const delay = (seconds: number): CSSProperties => ({ animationDelay: `${seconds}s` });
 
 /** Text animations are pure CSS so the hero paints instantly, before hydration. */
-export function Hero() {
-  const school = education[0];
-  const latest = experiences[0];
+export async function Hero() {
+  const { locale, dict, content } = await getI18n();
+  const { profile } = content;
+  const school = content.education[0];
+  const latest = content.experiences[0];
 
   const readout = [
-    { label: "Focus", value: "AI · Data · Software" },
-    { label: "Based in", value: profile.location },
-    school && { label: "Currently", value: `Engineering student, ${school.shortName ?? school.institution}` },
-    latest && { label: "Latest", value: `${latest.type} · ${latest.company}` },
+    { label: dict.hero.focus, value: dict.hero.focusValue },
+    { label: dict.hero.basedIn, value: profile.location },
+    school && { label: dict.hero.currently, value: `${dict.hero.engineeringStudent}, ${school.shortName ?? school.institution}` },
+    latest && { label: dict.hero.latest, value: `${dict.experience.types[latest.type]} · ${latest.company}` },
   ].filter((item): item is { label: string; value: string } => Boolean(item));
 
   return (
@@ -35,17 +37,26 @@ export function Hero() {
       </div>
 
       <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-12 px-4 pt-(--nav-height) sm:px-6 lg:grid-cols-12 lg:px-8">
-        <div className="py-16 sm:py-24 lg:col-span-8">
+        <div className="py-10 sm:py-24 lg:col-span-8">
+          {/* Mobile & tablet portrait (desktop shows the large one on the right) */}
+          {profile.photo && (
+            <div className="relative mb-8 w-44 animate-fade-in sm:w-52 lg:hidden" style={delay(0.05)}>
+              <div aria-hidden className="absolute -inset-6 -z-10 rounded-full bg-accent/15 blur-3xl" />
+              <div className="brackets relative overflow-hidden rounded-3xl border border-line-strong bg-raised">
+                <Image
+                  src={profile.photo}
+                  alt={`${dict.hero.portraitAlt} ${profile.name}`}
+                  width={648}
+                  height={874}
+                  sizes="(min-width: 640px) 208px, 176px"
+                  preload
+                  className="aspect-[4/5] w-full object-cover object-top"
+                />
+                <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/70 to-transparent" />
+              </div>
+            </div>
+          )}
           <div className="mb-8 flex animate-fade-in items-center gap-4" style={delay(0.1)}>
-            {profile.photo && (
-              <Image
-                src={profile.photo}
-                alt=""
-                width={56}
-                height={56}
-                className="size-14 rounded-full border border-line-strong object-cover object-top lg:hidden"
-              />
-            )}
             {profile.availability.available && (
               <p className="inline-flex items-center gap-2.5 rounded-full border border-line-strong bg-raised/60 py-1.5 pr-4 pl-3 text-xs text-muted backdrop-blur">
                 <StatusDot />
@@ -83,8 +94,8 @@ export function Hero() {
           </p>
 
           <div className="mt-10 flex animate-fade-in flex-wrap items-center gap-3" style={delay(0.6)}>
-            <ButtonLink href="/#projects" size="lg">
-              Explore my work
+            <ButtonLink href={`/${locale}#projects`} size="lg">
+              {dict.hero.explore}
               <ArrowDownRight
                 className="size-4 transition-transform duration-300 group-hover/button:translate-x-0.5 group-hover/button:translate-y-0.5"
                 aria-hidden
@@ -93,7 +104,7 @@ export function Hero() {
             {profile.cvPath && (
               <ButtonLink href={profile.cvPath} variant="secondary" size="lg" download>
                 <Download className="size-4" aria-hidden />
-                Download CV
+                {dict.hero.downloadCv}
               </ButtonLink>
             )}
           </div>
@@ -104,7 +115,7 @@ export function Hero() {
           )}
         </div>
 
-        {profile.photo && <Portrait src={profile.photo} />}
+        {profile.photo && <Portrait src={profile.photo} profile={profile} dict={dict} />}
       </div>
 
       <div className="mx-auto w-full max-w-7xl animate-fade-in px-4 pb-8 sm:px-6 lg:px-8" style={delay(0.7)}>
@@ -122,13 +133,13 @@ export function Hero() {
 }
 
 /** Portrait in a "lab viewfinder" frame (desktop only; mobile shows an avatar). */
-function Portrait({ src }: { src: string }) {
+function Portrait({ src, profile, dict }: { src: string; profile: Content["profile"]; dict: Dictionary }) {
   return (
     <figure className="relative hidden animate-fade-in lg:col-span-4 lg:block" style={delay(0.35)}>
       <div className="brackets relative overflow-hidden rounded-3xl border border-line-strong bg-raised">
         <Image
           src={src}
-          alt={`Portrait of ${profile.name}`}
+          alt={`${dict.hero.portraitAlt} ${profile.name}`}
           width={648}
           height={874}
           sizes="(min-width: 1280px) 400px, 32vw"
@@ -139,7 +150,7 @@ function Portrait({ src }: { src: string }) {
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
         <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5">
           <span>
-            <span className="block label-mono text-accent">Subject</span>
+            <span className="block label-mono text-accent">{dict.hero.subject}</span>
             <span className="mt-1 block font-display text-lg font-medium text-fg">{profile.name}</span>
           </span>
           <span className="text-right font-mono text-[0.6875rem] leading-relaxed text-muted">

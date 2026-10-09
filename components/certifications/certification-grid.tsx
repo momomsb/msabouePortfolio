@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { CertificationCard } from "@/components/certifications/certification-card";
 import { FilterBar } from "@/components/ui/filter-bar";
+import { useI18n } from "@/i18n/locale-provider";
 import type { Certification, CertificationCategory } from "@/types";
 
 type Filter = "All" | CertificationCategory;
@@ -11,6 +12,8 @@ type Filter = "All" | CertificationCategory;
 const FILTERS: Filter[] = ["All", "AI / ML", "Data", "Cloud", "Programming", "Other"];
 
 export function CertificationGrid({ certifications }: { certifications: Certification[] }) {
+  const { dict } = useI18n();
+  const t = dict.certifications;
   const [filter, setFilter] = useState<Filter>("All");
 
   const counts = useMemo(() => {
@@ -26,7 +29,8 @@ export function CertificationGrid({ certifications }: { certifications: Certific
   return (
     <div>
       <FilterBar
-        label="Filter certifications by category"
+        label={t.filterLabel}
+        getLabel={(option) => t.categories[option]}
         options={FILTERS}
         value={filter}
         onChange={setFilter}
@@ -34,9 +38,9 @@ export function CertificationGrid({ certifications }: { certifications: Certific
         className="mb-8"
       />
       <p className="sr-only" aria-live="polite">
-        {visible.length} certification{visible.length === 1 ? "" : "s"} shown
+        {t.shown(visible.length)}
       </p>
-      <motion.ul layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.ul layout className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <AnimatePresence mode="popLayout" initial={false}>
           {visible.map((certification) => (
             <motion.li

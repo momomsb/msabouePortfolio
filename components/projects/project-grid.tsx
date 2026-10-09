@@ -4,11 +4,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { ProjectCard } from "@/components/projects/project-card";
 import { FilterBar } from "@/components/ui/filter-bar";
+import { useI18n } from "@/i18n/locale-provider";
 import type { Project, ProjectCategory } from "@/types";
 
 type Filter = "All" | ProjectCategory;
 
 export function ProjectGrid({ projects, filters }: { projects: Project[]; filters: Filter[] }) {
+  const { dict } = useI18n();
+  const t = dict.projects;
   const [filter, setFilter] = useState<Filter>("All");
 
   const counts = useMemo(() => {
@@ -24,7 +27,8 @@ export function ProjectGrid({ projects, filters }: { projects: Project[]; filter
   return (
     <div>
       <FilterBar
-        label="Filter projects by category"
+        label={t.filterLabel}
+        getLabel={(option) => t.categories[option]}
         options={filters}
         value={filter}
         onChange={setFilter}
@@ -32,7 +36,7 @@ export function ProjectGrid({ projects, filters }: { projects: Project[]; filter
         className="mb-8"
       />
       <p className="sr-only" aria-live="polite">
-        {visible.length} project{visible.length === 1 ? "" : "s"} shown
+        {t.shown(visible.length)}
       </p>
       <motion.ul layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout" initial={false}>

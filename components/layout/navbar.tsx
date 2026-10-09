@@ -5,19 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Menu } from "lucide-react";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 import { Logo } from "@/components/layout/logo";
 import { MobileMenu } from "@/components/layout/mobile-menu";
-import { ButtonLink } from "@/components/ui/button";
-import { navigation } from "@/data/navigation";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { useI18n } from "@/i18n/locale-provider";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
 
-const sectionIds = navigation.map((item) => item.sectionId);
-
 export function Navbar() {
+  const { locale, dict, content } = useI18n();
   const pathname = usePathname();
-  const isHome = pathname === "/";
-  const activeSection = useActiveSection(sectionIds, isHome);
+  const isHome = pathname === `/${locale}`;
+  const activeSection = useActiveSection(
+    content.navigation.map((item) => item.sectionId),
+    isHome,
+  );
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -39,19 +42,22 @@ export function Navbar() {
           scrolled ? "border-b border-line/80 bg-ink/75 backdrop-blur-xl" : "border-b border-transparent",
         )}
       >
-        <nav aria-label="Main" className="mx-auto flex h-(--nav-height) max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <nav
+          aria-label={dict.nav.main}
+          className="mx-auto flex h-(--nav-height) max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+        >
           <Logo />
 
           <ul className="hidden items-center gap-0.5 lg:flex">
-            {navigation.map((item) => {
+            {content.navigation.map((item) => {
               const active = activeSection === item.sectionId;
               return (
-                <li key={item.href}>
+                <li key={item.sectionId}>
                   <Link
-                    href={item.href}
+                    href={`/${locale}#${item.sectionId}`}
                     aria-current={active ? "location" : undefined}
                     className={cn(
-                      "relative block rounded-full px-3 py-2 text-[0.8125rem] transition-colors duration-200",
+                      "relative block rounded-full px-2.5 py-2 text-[0.8125rem] whitespace-nowrap transition-colors duration-200 xl:px-3",
                       active ? "text-fg" : "text-muted hover:text-fg",
                     )}
                   >
@@ -69,18 +75,17 @@ export function Navbar() {
             })}
           </ul>
 
-          <div className="flex items-center gap-2">
-            <ButtonLink href="/#contact" variant="primary" className="hidden sm:inline-flex">
-              Let&apos;s talk
-            </ButtonLink>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <ThemeToggle />
+            <LanguageToggle />
             <button
               ref={menuButtonRef}
               type="button"
               onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
+              aria-label={dict.nav.openMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
-              className="grid size-10 place-items-center rounded-full border border-line-strong bg-raised/60 text-fg transition-colors hover:border-accent/50 lg:hidden"
+              className="grid size-9 place-items-center rounded-full border border-line-strong bg-raised/60 text-fg transition-colors hover:border-accent/50 lg:hidden"
             >
               <Menu className="size-4.5" aria-hidden />
             </button>

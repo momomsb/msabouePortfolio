@@ -5,8 +5,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { ArrowUp, X } from "lucide-react";
 import { MessageContent } from "@/components/ai/message-content";
 import type { ChatMessage } from "@/components/ai/types";
-import { profile } from "@/data/profile";
-import { SUGGESTED_QUESTIONS } from "@/lib/chat/suggestions";
+import { useI18n } from "@/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 import { CHAT_LIMITS } from "@/lib/validation";
 import type { ApiError, ChatResponse } from "@/types/api";
@@ -20,6 +19,9 @@ interface AskAiPanelProps {
 const newId = () => crypto.randomUUID();
 
 export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskAiPanelProps) {
+  const { locale, dict, content } = useI18n();
+  const t = dict.ai;
+  const name = content.profile.firstName;
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,13 +55,13 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({ locale, messages: history.map(({ role, content }) => ({ role, content })) }),
       });
       const data = (await res.json()) as ChatResponse | ApiError;
-      if (!res.ok || "error" in data) throw new Error("error" in data ? data.error : "Request failed");
+      if (!res.ok || "error" in data) throw new Error("error" in data ? t.errors[data.error] : t.networkError);
       onMessagesChange((current) => [...current, { id: newId(), role: "assistant", content: data.reply, mode: data.mode }]);
     } catch (error) {
-      const message = error instanceof Error && error.message !== "Failed to fetch" ? error.message : "Network error. Please try again.";
+      const message = error instanceof Error && error.message !== "Failed to fetch" ? error.message : t.networkError;
       onMessagesChange((current) => [...current, { id: newId(), role: "assistant", content: message, error: true }]);
     } finally {
       setPending(false);
@@ -96,16 +98,14 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
             <span aria-hidden className="text-accent">
               ✦
             </span>
-            Ask my AI
+            {t.title}
           </h2>
-          <p className="mt-0.5 font-mono text-[0.625rem] tracking-wider text-subtle uppercase">
-            {isDemo ? "Demo mode · answers from portfolio data" : "Answers from portfolio content only"}
-          </p>
+          <p className="mt-0.5 font-mono text-[0.625rem] tracking-wider text-subtle uppercase">{isDemo ? t.demoMode : t.aiMode}</p>
         </div>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close assistant"
+          aria-label={t.close}
           className="grid size-8 place-items-center rounded-full text-muted transition-colors hover:bg-raised hover:text-fg"
         >
           <X className="size-4" aria-hidden />
@@ -115,12 +115,9 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
       <div ref={scrollRef} className="relative flex-1 space-y-4 overflow-y-auto px-4 py-4 text-sm leading-relaxed" aria-live="polite">
         {messages.length === 0 && (
           <div className="space-y-4">
-            <p className="text-muted">
-              Hi! I can answer questions about {profile.firstName}&apos;s experience, projects, skills and education, using only what&apos;s
-              on this portfolio.
-            </p>
-            <ul className="flex flex-col gap-2" aria-label="Suggested questions">
-              {SUGGESTED_QUESTIONS.map((question) => (
+            <p className="text-muted">{t.intro(name)}</p>
+            <ul className="flex flex-col gap-2" aria-label={t.suggestionsLabel}>
+              {t.suggestions(name).map((question) => (
                 <li key={question}>
                   <button
                     type="button"
@@ -145,13 +142,13 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
                 message.error && "rounded-bl-md border border-danger/40 bg-danger/10 text-danger",
               )}
             >
-              {message.role === "user" ? message.content : <MessageContent text={message.content} />}
+              {message.role === "user" ? message.content : <MessageContent text={message.content} locale={locale} />}
             </div>
           </div>
         ))}
 
         {pending && (
-          <div className="flex justify-start" role="status" aria-label="Thinking">
+          <div className="flex justify-start" role="status" aria-label={t.thinking}>
             <div className="flex gap-1 rounded-2xl rounded-bl-md border border-line bg-raised px-4 py-3.5">
               {[0, 1, 2].map((dot) => (
                 <motion.span
@@ -168,7 +165,7 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
 
       <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-line p-3">
         <label htmlFor="ask-ai-input" className="sr-only">
-          Your question
+          {t.inputLabel}
         </label>
         <input
           ref={inputRef}
@@ -176,14 +173,14 @@ export default function AskAiPanel({ messages, onMessagesChange, onClose }: AskA
           value={input}
           onChange={(event) => setInput(event.target.value)}
           maxLength={CHAT_LIMITS.maxChars}
-          placeholder={`Ask about ${profile.firstName}…`}
+          placeholder={t.placeholder(name)}
           autoComplete="off"
           className="h-10 flex-1 rounded-full border border-line bg-ink/60 px-4 text-sm text-fg placeholder:text-subtle focus:border-accent/50 focus:outline-none"
         />
         <button
           type="submit"
           disabled={pending || !input.trim()}
-          aria-label="Send question"
+          aria-label={t.send}
           className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-ink transition-opacity disabled:opacity-40"
         >
           <ArrowUp className="size-4" aria-hidden />

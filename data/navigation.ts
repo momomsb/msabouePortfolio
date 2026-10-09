@@ -1,12 +1,12 @@
-import type { NavItem } from "@/types";
+import type { NavItemData } from "@/types";
 
-export const navigation: NavItem[] = [
-  { label: "Home", href: "/#home", sectionId: "home" },
-  { label: "About", href: "/#about", sectionId: "about" },
-  { label: "Experience", href: "/#experience", sectionId: "experience" },
-  { label: "Projects", href: "/#projects", sectionId: "projects" },
-  { label: "Skills", href: "/#skills", sectionId: "skills" },
-  { label: "Certifications", href: "/#certifications", sectionId: "certifications" },
-  { label: "Education", href: "/#education", sectionId: "education" },
-  { label: "Contact", href: "/#contact", sectionId: "contact" },
+export const navigation: NavItemData[] = [
+  { label: { en: "Home", fr: "Accueil" }, sectionId: "home" },
+  { label: { en: "About", fr: "À propos" }, sectionId: "about" },
+  { label: { en: "Experience", fr: "Expérience" }, sectionId: "experience" },
+  { label: { en: "Projects", fr: "Projets" }, sectionId: "projects" },
+  { label: { en: "Skills", fr: "Compétences" }, sectionId: "skills" },
+  { label: "Certifications", sectionId: "certifications" },
+  { label: { en: "Education", fr: "Formation" }, sectionId: "education" },
+  { label: "Contact", sectionId: "contact" },
 ];

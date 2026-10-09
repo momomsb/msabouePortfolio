@@ -4,12 +4,14 @@ import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
 import type { ChatMessage } from "@/components/ai/types";
+import { useI18n } from "@/i18n/locale-provider";
 
 const loadPanel = () => import("@/components/ai/ask-ai-panel");
 // The panel (and its logic) is only downloaded when the visitor shows intent.
 const AskAiPanel = dynamic(loadPanel, { ssr: false });
 
 export function AskAiLauncher() {
+  const { dict } = useI18n();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +40,7 @@ export function AskAiLauncher() {
             <span aria-hidden className="text-accent transition-transform duration-500 group-hover:rotate-180">
               ✦
             </span>
-            Ask my AI
+            {dict.ai.launcher}
           </motion.button>
         )}
       </AnimatePresence>

@@ -1,14 +1,17 @@
+"use client";
+
 import Link from "next/link";
-import { profile } from "@/data/profile";
+import { useI18n } from "@/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
+  const { locale, dict, content } = useI18n();
   return (
     <Link
-      href="/#home"
+      href={`/${locale}#home`}
       onClick={onNavigate}
-      aria-label={`${profile.name}, back to top`}
-      className={cn("group flex items-center gap-3 rounded-md", className)}
+      aria-label={`${content.profile.name}, ${dict.nav.backToTop}`}
+      className={cn("group flex shrink-0 items-center gap-3 rounded-md", className)}
     >
       <span
         aria-hidden
@@ -17,9 +20,9 @@ export function Logo({ className, onNavigate }: { className?: string; onNavigate
         MM
         <span className="absolute -top-px -right-px size-1.5 rounded-[1px] bg-accent" />
       </span>
-      <span className="hidden flex-col leading-none sm:flex">
-        <span className="font-display text-[0.9375rem] font-medium tracking-tight text-fg">{profile.name}</span>
-        <span className="mt-1 font-mono text-[0.625rem] tracking-[0.2em] text-subtle uppercase">Digital Lab</span>
+      <span className="hidden flex-col leading-none sm:flex lg:hidden xl:flex">
+        <span className="font-display text-[0.9375rem] font-medium tracking-tight text-fg">{content.profile.name}</span>
+        <span className="mt-1 font-mono text-[0.625rem] tracking-[0.2em] text-subtle uppercase">{dict.nav.lab}</span>
       </span>
     </Link>
   );

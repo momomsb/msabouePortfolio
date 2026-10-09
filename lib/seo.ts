@@ -1,9 +1,9 @@
-import { education } from "@/data/education";
-import { profile } from "@/data/profile";
-import { getAvailableSocials } from "@/lib/content";
+import type { Locale } from "@/i18n/config";
+import { getAvailableSocials, getContent } from "@/lib/content";
 import { siteConfig } from "@/lib/site";
 
-export function getPersonJsonLd() {
+export function getPersonJsonLd(locale: Locale) {
+  const { profile, education } = getContent(locale);
   const school = education.find((entry) => entry.kind === "degree");
   const socials = getAvailableSocials();
   const sameAs = socials.filter((social) => social.platform === "github" || social.platform === "linkedin").map((social) => social.href);
@@ -14,9 +14,10 @@ export function getPersonJsonLd() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: profile.name,
-    url: siteConfig.url,
+    url: `${siteConfig.url}/${locale}`,
     jobTitle: profile.role,
     description: profile.summary,
+    image: profile.photo ? `${siteConfig.url}${profile.photo}` : undefined,
     address: { "@type": "PostalAddress", addressLocality: profile.location.split(",")[0], addressCountry: "MA" },
     knowsLanguage: profile.languages.map((language) => language.name),
     ...(email && { email }),
@@ -31,5 +32,5 @@ export function getPersonJsonLd() {
 
 /** Serializes JSON-LD safely for an inline <script> (escapes `<`). */
 export function serializeJsonLd(data: object) {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
+  return JSON.stringify(data).replace(/</g, "\u003c");
 }

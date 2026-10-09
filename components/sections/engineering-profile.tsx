@@ -2,7 +2,7 @@ import { BarChart3, Brain, Cloud, Database, Layers, LayoutTemplate, Server, Work
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { engineeringDomains } from "@/data/skills";
+import { getI18n } from "@/i18n/server";
 import type { EngineeringDomain } from "@/types";
 
 const icons: Record<EngineeringDomain["icon"], LucideIcon> = {
@@ -16,19 +16,14 @@ const icons: Record<EngineeringDomain["icon"], LucideIcon> = {
   workflow: Workflow,
 };
 
-export function EngineeringProfile() {
+export async function EngineeringProfile() {
+  const { dict, content } = await getI18n();
   return (
     <Section id="skills">
-      <SectionHeader
-        id="skills"
-        index={4}
-        tag="Skills · Engineering profile"
-        title="Every layer, one system."
-        description="From the data layer to the interface: the domains I work across, and the tools I use in each."
-      />
+      <SectionHeader id="skills" index={4} tag={dict.skills.tag} title={dict.skills.title} description={dict.skills.description} />
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {engineeringDomains.map((domain, index) => {
+        {content.engineeringDomains.map((domain, index) => {
           const Icon = icons[domain.icon];
           return (
             <Reveal as="li" key={domain.id} delay={(index % 4) * 0.06} className="h-full">

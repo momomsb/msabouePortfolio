@@ -1,9 +1,11 @@
 import { ArrowUp } from "lucide-react";
 import { SocialIcon } from "@/components/ui/brand-icons";
-import { profile } from "@/data/profile";
+import { getI18n } from "@/i18n/server";
 import { getAvailableSocials, socialLinkProps } from "@/lib/content";
 
-export function Footer() {
+export async function Footer() {
+  const { dict, content } = await getI18n();
+  const { profile } = content;
   const socials = getAvailableSocials();
 
   return (
@@ -35,9 +37,9 @@ export function Footer() {
 
         <div className="flex flex-col-reverse justify-between gap-4 border-t border-line pt-6 text-xs text-subtle sm:flex-row sm:items-center">
           <p>© 2026 {profile.name}</p>
-          <p className="font-mono">Designed &amp; engineered with Next.js</p>
+          <p className="font-mono">{dict.footer.builtWith}</p>
           <a href="#top" className="inline-flex items-center gap-1.5 self-start transition-colors hover:text-fg sm:self-auto">
-            Back to top <ArrowUp className="size-3.5" aria-hidden />
+            {dict.common.backToTop} <ArrowUp className="size-3.5" aria-hidden />
           </a>
         </div>
       </div>

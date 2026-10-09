@@ -1,40 +1,76 @@
 import { caseStudies } from "@/data/case-studies";
 import { certifications } from "@/data/certifications";
+import { education } from "@/data/education";
 import { experiences } from "@/data/experience";
+import { navigation } from "@/data/navigation";
+import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
+import { engineeringDomains, techStack } from "@/data/skills";
 import { socials } from "@/data/socials";
+import { localize, type Locale } from "@/i18n/config";
 import type { Project, SocialLink } from "@/types";
 
-/** Read-side helpers over `data/`. Components never filter raw data themselves. */
-
-export function getFeaturedProject() {
-  return projects.find((project) => project.featured) ?? null;
+/**
+ * Read-side access to `data/`, resolved for one locale.
+ * Components never read raw (bilingual) data themselves.
+ */
+function build(locale: Locale) {
+  return {
+    locale,
+    profile: localize(profile, locale),
+    navigation: localize(navigation, locale),
+    experiences: localize(experiences, locale),
+    projects: localize(projects, locale),
+    caseStudies: localize(caseStudies, locale),
+    certifications: localize(certifications, locale),
+    education: localize(education, locale),
+    engineeringDomains: localize(engineeringDomains, locale),
+    techStack: localize(techStack, locale),
+  };
 }
 
-export function getProject(slug: string) {
-  return projects.find((project) => project.slug === slug) ?? null;
+export type Content = ReturnType<typeof build>;
+
+const cache = new Map<Locale, Content>();
+
+export function getContent(locale: Locale): Content {
+  let content = cache.get(locale);
+  if (!content) {
+    content = build(locale);
+    cache.set(locale, content);
+  }
+  return content;
+}
+
+export function getFeaturedProject(content: Content) {
+  return content.projects.find((project) => project.featured) ?? null;
+}
+
+export function getProject(content: Content, slug: string) {
+  return content.projects.find((project) => project.slug === slug) ?? null;
+}
+
+export function getCaseStudy(content: Content, slug: string) {
+  return content.caseStudies.find((study) => study.slug === slug) ?? null;
+}
+
+/** Slugs with both a project and a case study (locale-independent). */
+export function getCaseStudySlugs() {
+  return caseStudies.filter((study) => projects.some((project) => project.slug === study.slug)).map((study) => study.slug);
+}
+
+export function getSpotlightCertification(content: Content) {
+  return content.certifications.find((cert) => cert.featured) ?? null;
+}
+
+export function getExperienceForProject(content: Content, slug: string) {
+  return content.experiences.find((experience) => experience.projectSlug === slug) ?? null;
 }
 
 /** Every public repository of a project: the `repositories` list, or the single `github` link. */
-export function getProjectRepositories(project: Project) {
+export function getProjectRepositories(project: Project, codeLabel: string) {
   if (project.repositories?.length) return project.repositories;
-  return project.github ? [{ label: "Code", url: project.github }] : [];
-}
-
-export function getCaseStudy(slug: string) {
-  return caseStudies.find((study) => study.slug === slug) ?? null;
-}
-
-export function getCaseStudySlugs() {
-  return caseStudies.filter((study) => getProject(study.slug)).map((study) => study.slug);
-}
-
-export function getSpotlightCertification() {
-  return certifications.find((cert) => cert.featured) ?? null;
-}
-
-export function getExperienceForProject(slug: string) {
-  return experiences.find((experience) => experience.projectSlug === slug) ?? null;
+  return project.github ? [{ label: codeLabel, url: project.github }] : [];
 }
 
 export type AvailableSocialLink = SocialLink & { href: string };
@@ -55,11 +91,11 @@ export function getSocial(platform: SocialLink["platform"]) {
 const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9+#]/g, "");
 
 /** Where a technology is actually used, derived from projects and experience. */
-export function getTechnologyUsage(technology: string) {
+export function getTechnologyUsage(content: Content, technology: string) {
   const key = normalize(technology);
   const matches = (list: string[]) => list.some((item) => normalize(item) === key);
   return {
-    projects: projects.filter((project) => matches(project.technologies)),
-    experiences: experiences.filter((experience) => matches(experience.technologies)),
+    projects: content.projects.filter((project) => matches(project.technologies)),
+    experiences: content.experiences.filter((experience) => matches(experience.technologies)),
   };
 }

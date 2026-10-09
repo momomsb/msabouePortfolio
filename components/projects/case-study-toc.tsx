@@ -1,14 +1,16 @@
 "use client";
 
 import { useActiveSection } from "@/hooks/use-active-section";
+import { useI18n } from "@/i18n/locale-provider";
 import { cn, pad } from "@/lib/utils";
 
 export function CaseStudyToc({ items }: { items: Array<{ id: string; title: string }> }) {
+  const { dict } = useI18n();
   const active = useActiveSection(items.map((item) => item.id));
 
   return (
-    <nav aria-label="Case study sections" className="sticky top-[calc(var(--nav-height)+2rem)]">
-      <p className="mb-4 label-mono text-subtle">Contents</p>
+    <nav aria-label={dict.caseStudy.sectionsLabel} className="sticky top-[calc(var(--nav-height)+2rem)]">
+      <p className="mb-4 label-mono text-subtle">{dict.caseStudy.contents}</p>
       <ol className="space-y-1 border-l border-line">
         {items.map((item, index) => {
           const isActive = active === item.id;

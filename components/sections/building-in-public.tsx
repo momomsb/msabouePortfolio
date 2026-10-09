@@ -4,6 +4,9 @@ import { GitHubIcon } from "@/components/ui/brand-icons";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { githubUsername } from "@/data/socials";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { getI18n } from "@/i18n/server";
 import { getGitHubActivity, type GitHubActivity } from "@/lib/github";
 import { cn, formatPartialDate } from "@/lib/utils";
 
@@ -19,40 +22,38 @@ const LANGUAGE_COLORS: Record<string, string> = {
   "Jupyter Notebook": "#DA5B0B",
 };
 
-export function BuildingInPublic() {
+export async function BuildingInPublic() {
   if (!githubUsername) return null;
+  const { locale, dict } = await getI18n();
+  const t = dict.github;
 
   return (
     <Section id="building-in-public">
-      <SectionHeader
-        id="building-in-public"
-        index={8}
-        tag="GitHub · Live feed"
-        title="Building in public."
-        description="Live data from GitHub: public repositories, languages and recent activity."
-      />
+      <SectionHeader id="building-in-public" index={8} tag={t.tag} title={t.title} description={t.description} />
       <Suspense fallback={<ActivitySkeleton />}>
-        <Activity username={githubUsername} />
+        <Activity username={githubUsername} locale={locale} t={t} />
       </Suspense>
     </Section>
   );
 }
 
-async function Activity({ username }: { username: string }) {
+type GitHubStrings = Dictionary["github"];
+
+async function Activity({ username, locale, t }: { username: string; locale: Locale; t: GitHubStrings }) {
   const activity = await getGitHubActivity(username);
-  if (!activity) return <ProfileLink username={username} />;
+  if (!activity) return <ProfileLink username={username} t={t} />;
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       <Reveal className="flex flex-col panel p-6 sm:p-8">
-        <p className="label-mono text-subtle">Public repositories</p>
+        <p className="label-mono text-subtle">{t.publicRepos}</p>
         <p className="mt-3 font-display text-6xl font-medium tracking-tight text-fg">{activity.repoCount}</p>
         {activity.contributions && (
           <p className="mt-2 text-sm text-muted">
-            <span className="text-fg">{activity.contributions.total}</span> contributions in the last year
+            <span className="text-fg">{activity.contributions.total}</span> {t.contributions}
           </p>
         )}
-        <LanguageBreakdown languages={activity.languages} />
+        <LanguageBreakdown languages={activity.languages} t={t} />
         <a
           href={activity.profileUrl}
           target="_blank"
@@ -65,10 +66,10 @@ async function Activity({ username }: { username: string }) {
       </Reveal>
 
       <Reveal delay={0.08} className="panel p-6 sm:p-8 lg:col-span-2">
-        {activity.contributions && <ContributionGraph weeks={activity.contributions.weeks} />}
-        <p className="mb-4 label-mono text-subtle">Recently updated</p>
+        {activity.contributions && <ContributionGraph weeks={activity.contributions.weeks} t={t} />}
+        <p className="mb-4 label-mono text-subtle">{t.recentlyUpdated}</p>
         {activity.recentRepos.length === 0 ? (
-          <p className="text-sm text-muted">No public repositories yet.</p>
+          <p className="text-sm text-muted">{t.noRepos}</p>
         ) : (
           <ul className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
             {activity.recentRepos.map((repo) => (
@@ -100,7 +101,9 @@ async function Activity({ username }: { username: string }) {
                         <Star className="size-3" aria-hidden /> {repo.stars}
                       </span>
                     )}
-                    <span>Updated {formatPartialDate(repo.updatedAt.slice(0, 7))}</span>
+                    <span>
+                      {t.updated} {formatPartialDate(repo.updatedAt.slice(0, 7), locale)}
+                    </span>
                   </span>
                 </a>
               </li>
@@ -112,12 +115,12 @@ async function Activity({ username }: { username: string }) {
   );
 }
 
-function LanguageBreakdown({ languages }: { languages: GitHubActivity["languages"] }) {
+function LanguageBreakdown({ languages, t }: { languages: GitHubActivity["languages"]; t: GitHubStrings }) {
   if (languages.length === 0) return null;
   const total = languages.reduce((sum, language) => sum + language.count, 0);
   return (
     <div className="mt-8">
-      <p className="mb-3 label-mono text-subtle">Primary languages</p>
+      <p className="mb-3 label-mono text-subtle">{t.primaryLanguages}</p>
       <div className="flex h-1.5 overflow-hidden rounded-full bg-raised" aria-hidden>
         {languages.map((language) => (
           <span
@@ -137,9 +140,7 @@ function LanguageBreakdown({ languages }: { languages: GitHubActivity["languages
               />
               {language.name}
             </span>
-            <span className="font-mono text-xs text-subtle">
-              {language.count} repo{language.count > 1 ? "s" : ""}
-            </span>
+            <span className="font-mono text-xs text-subtle">{t.repo(language.count)}</span>
           </li>
         ))}
       </ul>
@@ -147,15 +148,15 @@ function LanguageBreakdown({ languages }: { languages: GitHubActivity["languages
   );
 }
 
-function ContributionGraph({ weeks }: { weeks: number[][] }) {
+function ContributionGraph({ weeks, t }: { weeks: number[][]; t: GitHubStrings }) {
   const max = Math.max(1, ...weeks.flat());
   const level = (count: number) => (count === 0 ? 0 : Math.ceil((count / max) * 4));
   const shades = ["bg-raised", "bg-accent/20", "bg-accent/40", "bg-accent/65", "bg-accent"];
 
   return (
     <div className="mb-8">
-      <p className="mb-4 label-mono text-subtle">Contributions · last 12 months</p>
-      <div className="overflow-x-auto pb-2" role="img" aria-label="GitHub contribution calendar for the last 12 months">
+      <p className="mb-4 label-mono text-subtle">{t.contributionsTitle}</p>
+      <div className="overflow-x-auto pb-2" role="img" aria-label={t.contributionsLabel}>
         <div className="flex gap-[3px]">
           {weeks.map((days, i) => (
             <div key={i} className="flex flex-col gap-[3px]">
@@ -170,7 +171,7 @@ function ContributionGraph({ weeks }: { weeks: number[][] }) {
   );
 }
 
-function ProfileLink({ username }: { username: string }) {
+function ProfileLink({ username, t }: { username: string; t: GitHubStrings }) {
   return (
     <a
       href={`https://github.com/${username}`}
@@ -183,7 +184,7 @@ function ProfileLink({ username }: { username: string }) {
           <GitHubIcon className="size-5" />
         </span>
         <span>
-          <span className="block text-lg font-medium text-fg">Follow the work on GitHub</span>
+          <span className="block text-lg font-medium text-fg">{t.follow}</span>
           <span className="font-mono text-sm text-subtle">@{username}</span>
         </span>
       </span>

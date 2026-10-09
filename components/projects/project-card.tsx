@@ -5,14 +5,17 @@ import { SignalVisual } from "@/components/projects/signal-visual";
 import { GitHubIcon } from "@/components/ui/brand-icons";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Tag } from "@/components/ui/tag";
+import { useI18n } from "@/i18n/locale-provider";
 import { getProjectRepositories } from "@/lib/content";
 import type { Project } from "@/types";
 
 const MAX_TAGS = 5;
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const { locale, dict } = useI18n();
+  const t = dict.projects;
   const extraTags = project.technologies.length - MAX_TAGS;
-  const repositories = getProjectRepositories(project);
+  const repositories = getProjectRepositories(project, t.code);
 
   return (
     <SpotlightCard className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface/80 transition-colors duration-300 hover:border-line-strong">
@@ -33,20 +36,20 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         )}
         {project.featured && (
           <span className="absolute top-3 left-3 rounded-full border border-accent/30 bg-ink/80 px-2.5 py-1 font-mono text-[0.625rem] tracking-wider text-accent uppercase backdrop-blur">
-            Featured
+            {t.featuredBadge}
           </span>
         )}
       </div>
 
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center justify-between font-mono text-[0.6875rem] text-subtle">
-          <span>{project.categories.join(" · ")}</span>
+          <span>{project.categories.map((category) => t.categories[category]).join(" · ")}</span>
           {project.year && <span>{project.year}</span>}
         </div>
         <h3 className="mt-3 text-xl font-medium tracking-tight text-fg">
           {project.hasCaseStudy ? (
             // Stretched link: the whole card opens the case study.
-            <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0 after:content-['']">
+            <Link href={`/${locale}/projects/${project.slug}`} className="after:absolute after:inset-0 after:content-['']">
               {project.title}
             </Link>
           ) : (
@@ -56,7 +59,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{project.description}</p>
 
         {project.highlights && project.highlights.length > 0 && (
-          <ul className="mt-4 space-y-1.5" aria-label={project.highlightsTitle ?? "Highlights"}>
+          <ul className="mt-4 space-y-1.5" aria-label={project.highlightsTitle ?? t.highlights}>
             {project.highlights.slice(0, 4).map((item) => (
               <li key={item} className="flex items-center gap-2.5 text-[0.8125rem] text-fg/85">
                 <span aria-hidden className="h-px w-2.5 shrink-0 bg-accent" />
@@ -87,7 +90,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
                 href={repo.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`${project.title}: ${repo.label} on GitHub (opens in a new tab)`}
+                aria-label={`${project.title}: ${repo.label} ${dict.common.onGitHub} (${dict.common.opensInNewTab})`}
                 className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg"
               >
                 <GitHubIcon className="size-4" /> {repo.label}
@@ -100,7 +103,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg"
               >
-                Live demo <ArrowUpRight className="size-4" aria-hidden />
+                {t.liveDemo} <ArrowUpRight className="size-4" aria-hidden />
               </a>
             )}
           </div>

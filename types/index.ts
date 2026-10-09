@@ -1,21 +1,28 @@
+import type { Resolved, Text } from "@/i18n/config";
+
 /**
- * Content model for the portfolio. Every section renders from `data/`,
- * so these interfaces are the contract between content and UI.
+ * Content model for the portfolio. Every section renders from `data/`.
  *
- * Convention: optional / `null` fields mean "not provided yet". The UI hides
- * them in production and shows a visible placeholder in development.
+ * - `*Data` types describe the files in `data/`: any `Text` field is either a
+ *   plain string (same in both languages) or `{ en, fr }`.
+ * - The un-suffixed types (`Project`, `Experience`…) are the same shapes
+ *   resolved for one locale: what components receive.
+ *
+ * Optional / `null` fields mean "not provided yet". The UI hides them in
+ * production and shows a visible placeholder in development.
  */
 
 /** ISO-like partial date: "2026", "2026-07" or "2026-07-13". */
 export type PartialDate = string;
 
+/** Filter keys. Display labels live in the dictionaries. */
 export type ProjectCategory = "AI" | "Data" | "Backend" | "Frontend" | "Big Data";
 
-export interface Project {
-  title: string;
+export interface ProjectData {
+  title: Text;
   slug: string;
   /** One or two sentences shown on cards. */
-  description: string;
+  description: Text;
   /** A project can belong to several filters (e.g. AI + Data). */
   categories: ProjectCategory[];
   technologies: string[];
@@ -27,101 +34,127 @@ export interface Project {
   /** Omit when the date isn't documented: the UI simply hides it. */
   year?: number;
   /** Short context line, e.g. "Internship · Attijariwafa Bank". */
-  context?: string;
+  context?: Text;
   /** Key features or concepts, shown as tags. */
-  highlights?: string[];
+  highlights?: Text[];
   /** Heading above the highlights (default "Highlights"). */
-  highlightsTitle?: string;
+  highlightsTitle?: Text;
   /** Extra public repositories for multi-repo projects (e.g. frontend + backend). */
-  repositories?: Array<{ label: string; url: string }>;
+  repositories?: Array<{ label: Text; url: string }>;
   /** Ordered pipeline stages, rendered as a flow on the featured card. */
-  pipeline?: string[];
+  pipeline?: Text[];
+  /** Screenshots under /public, shown in the case study gallery. */
+  gallery?: Array<{ src: string; alt: Text; width: number; height: number }>;
   /** When true, the card links to /projects/[slug]. */
   hasCaseStudy?: boolean;
 }
 
+/** Filter keys. Display labels live in the dictionaries. */
 export type CertificationCategory = "AI / ML" | "Data" | "Cloud" | "Programming" | "Other";
 
-export interface Certification {
-  title: string;
+export interface CertificationData {
+  title: Text;
   issuer: string;
-  /** Date of issue, e.g. "2026-03". */
-  date: PartialDate;
+  /** Date of issue, e.g. "2026-03". Omit when unknown. */
+  date?: PartialDate;
   category: CertificationCategory;
-  skills: string[];
+  skills: Text[];
   credentialId?: string;
-  /** Public verification page. */
+  /** Public verification page: shows "Verify credential". */
   credentialUrl?: string;
-  /** Issuer logo / badge under /public. */
+  /** Badge or issuer logo under /public. */
   image?: string;
-  /** Certificate file under /public (PDF or image), opened in a new tab. */
+  /** Certificate under /public (PDF or image): shows "View certificate" and a preview when it's an image. */
   certificateFile?: string;
   /** The first featured certification is shown in the spotlight. */
   featured?: boolean;
 }
 
 export interface Language {
-  name: string;
-  level: string;
+  name: Text;
+  level: Text;
 }
+
+/** Generic icons for tools without a brand logo. */
+export type GenericIcon =
+  | "brain"
+  | "sparkles"
+  | "search"
+  | "network"
+  | "message"
+  | "workflow"
+  | "code"
+  | "chart"
+  | "lineChart"
+  | "cube"
+  | "report"
+  | "sheet"
+  | "database"
+  | "cloud";
 
 export interface Skill {
   name: string;
-  /** Two-letter "element" symbol in the tech stack table. Derived from the name when omitted. */
-  symbol?: string;
+  /** Simple Icons slug of the brand logo (https://simpleicons.org), e.g. "python". */
+  logo?: string;
+  /** Generic icon when no brand logo exists. */
+  icon?: GenericIcon;
 }
 
-export interface SkillGroup {
+export interface SkillGroupData {
   id: string;
-  title: string;
+  title: Text;
   /** Short line describing what this group covers. */
-  description?: string;
+  description?: Text;
   skills: Skill[];
 }
 
-export interface EngineeringDomain {
+export interface EngineeringDomainData {
   id: string;
-  title: string;
-  summary: string;
+  title: Text;
+  summary: Text;
   icon: "brain" | "database" | "server" | "layout" | "layers" | "cloud" | "chart" | "workflow";
   technologies: string[];
 }
 
-export interface Experience {
+export type ExperienceType = "internship" | "full-time" | "part-time" | "freelance";
+
+export interface ExperienceData {
   id: string;
-  company: string;
-  team?: string;
-  role: string;
-  type: "Internship" | "Full-time" | "Part-time" | "Freelance";
-  title: string;
+  company: Text;
+  team?: Text;
+  role: Text;
+  type: ExperienceType;
+  title: Text;
   start: PartialDate;
-  /** `null` = ongoing. */
+  /** `null` = ongoing. Same value as `start` for a single month. */
   end: PartialDate | null;
-  location?: string;
-  context: string;
-  problem: string;
+  location?: Text;
+  context: Text;
+  problem: Text;
   technologies: string[];
-  responsibilities: string[];
+  responsibilities: Text[];
   /** Measured outcomes. Leave empty until real results are documented. */
-  results: string[];
+  results: Text[];
   /** Related project slug, links to its case study. */
   projectSlug?: string;
 }
 
 export type EducationKind = "degree" | "preparatory" | "secondary" | "training";
 
-export interface Education {
+export interface EducationData {
   id: string;
   kind: EducationKind;
   institution: string;
   shortName?: string;
-  program: string;
-  status: string;
+  program: Text;
+  status: Text;
+  /** Highlights the entry as ongoing. */
+  ongoing?: boolean;
   start?: PartialDate;
   end?: PartialDate | null;
-  location?: string;
-  description?: string;
-  highlights?: string[];
+  location?: Text;
+  description?: Text;
+  highlights?: Text[];
 }
 
 export type SocialPlatform = "github" | "linkedin" | "email" | "phone";
@@ -135,54 +168,88 @@ export interface SocialLink {
   handle?: string;
 }
 
-export interface NavItem {
-  label: string;
-  href: string;
-  /** Section id observed for the active state. */
+export interface NavItemData {
+  label: Text;
+  /** Section id: the link points to /{locale}#id. */
   sectionId: string;
 }
 
-export interface CaseStudyBlock {
+interface SectionBase {
+  /** Anchor id, unique within the case study. */
   id: string;
-  title: string;
-  /** Paragraphs. Empty = not documented yet. */
-  body: string[];
-  bullets?: string[];
+  title: Text;
 }
 
-export interface TechnicalIndicator {
+/** Prose. An empty `body` means "not documented yet": hidden in production. */
+export interface TextSectionData extends SectionBase {
+  kind: "text";
+  body: Text[];
+  bullets?: Text[];
+}
+
+/** Layered architecture diagram, in data-flow order. */
+export interface ArchitectureSectionData extends SectionBase {
+  kind: "architecture";
+  body: Text[];
+  layers: ArchitectureLayerData[];
+}
+
+/** Grouped feature lists (e.g. "Kafka management": […]). */
+export interface FeaturesSectionData extends SectionBase {
+  kind: "features";
+  body?: Text[];
+  groups: Array<{ title: Text; items: Text[] }>;
+}
+
+/** Name → role table (technologies, layers…). */
+export interface StackSectionData extends SectionBase {
+  kind: "stack";
+  items: Array<{ name: Text; role: Text }>;
+}
+
+/** Cards with a short name, a full name and a description (e.g. technical indicators). */
+export interface IndicatorsSectionData extends SectionBase {
+  kind: "indicators";
+  body: Text[];
+  indicators: TechnicalIndicatorData[];
+}
+
+/** Screenshots from the project's `gallery`. */
+export interface GallerySectionData extends SectionBase {
+  kind: "gallery";
+  body?: Text[];
+}
+
+export type CaseStudySectionData =
+  TextSectionData | ArchitectureSectionData | FeaturesSectionData | StackSectionData | IndicatorsSectionData | GallerySectionData;
+
+export interface TechnicalIndicatorData {
   name: string;
-  fullName: string;
-  description: string;
+  fullName: Text;
+  description: Text;
 }
 
-export interface ArchitectureNode {
-  label: string;
-  detail: string;
+export interface ArchitectureLayerData {
+  title: Text;
+  nodes: Array<{ label: Text; detail: Text }>;
 }
 
-export interface ArchitectureLayer {
-  title: string;
-  nodes: ArchitectureNode[];
-}
-
-export interface StackRole {
-  name: string;
-  role: string;
-}
-
-export interface CaseStudy {
+export interface CaseStudyData {
+  /** Must match a project slug. */
   slug: string;
-  tagline: string;
-  problem: CaseStudyBlock;
-  context: CaseStudyBlock;
-  solution: CaseStudyBlock;
-  architecture: CaseStudyBlock & { layers: ArchitectureLayer[] };
-  /** "Technologies" section: each tool and what it does in the system. */
-  stack: StackRole[];
-  dataPipeline: CaseStudyBlock;
-  aiAgent: CaseStudyBlock;
-  technicalAnalysis: CaseStudyBlock & { indicators: TechnicalIndicator[] };
-  results: CaseStudyBlock;
-  lessons: CaseStudyBlock;
+  tagline: Text;
+  /** Rendered in this order, numbered, with a table of contents. */
+  sections: CaseStudySectionData[];
 }
+
+/* ── Resolved (single-locale) shapes used by components ─────────── */
+export type Project = Resolved<ProjectData>;
+export type Certification = Resolved<CertificationData>;
+export type SkillGroup = Resolved<SkillGroupData>;
+export type EngineeringDomain = Resolved<EngineeringDomainData>;
+export type Experience = Resolved<ExperienceData>;
+export type Education = Resolved<EducationData>;
+export type NavItem = Resolved<NavItemData>;
+export type CaseStudy = Resolved<CaseStudyData>;
+export type CaseStudySection = Resolved<CaseStudySectionData>;
+export type ArchitectureLayer = Resolved<ArchitectureLayerData>;

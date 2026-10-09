@@ -5,11 +5,14 @@ import { ContentPlaceholder } from "@/components/ui/content-placeholder";
 import { Reveal } from "@/components/ui/reveal";
 import { Section } from "@/components/ui/section";
 import { StatusDot } from "@/components/ui/tag";
-import { profile } from "@/data/profile";
 import { socials } from "@/data/socials";
+import { getI18n } from "@/i18n/server";
 import { getAvailableSocials, socialLinkProps } from "@/lib/content";
 
-export function Contact() {
+export async function Contact() {
+  const { dict, content } = await getI18n();
+  const t = dict.contact;
+  const { profile } = content;
   const channels = getAvailableSocials();
   const missing = socials.filter((social) => !social.href).map((social) => social.label);
 
@@ -25,11 +28,11 @@ export function Contact() {
           <p className="mb-5 flex items-center gap-3 label-mono text-accent">
             <span aria-hidden className="inline-block size-1.5 rounded-[1px] bg-accent" />
             <span>
-              <span className="text-subtle">[09]</span> Contact · Open channel
+              <span className="text-subtle">[09]</span> {t.tag}
             </span>
           </p>
           <h2 id="contact-title" className="text-4xl font-medium tracking-tight text-fg sm:text-5xl lg:text-6xl">
-            Let&apos;s build something meaningful.
+            {t.title}
           </h2>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">{profile.lookingFor}</p>
 
@@ -66,7 +69,7 @@ export function Contact() {
             <li className="flex items-center gap-4 py-4">
               <MapPin className="size-4.5 text-subtle" aria-hidden />
               <span>
-                <span className="block label-mono text-subtle">Location</span>
+                <span className="block label-mono text-subtle">{t.location}</span>
                 <span className="mt-1 block text-fg">{profile.location}</span>
               </span>
             </li>

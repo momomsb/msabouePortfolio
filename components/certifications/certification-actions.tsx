@@ -1,10 +1,16 @@
+"use client";
+
 import { ArrowUpRight, FileText } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { useI18n } from "@/i18n/locale-provider";
 import type { Certification } from "@/types";
 
 /** "Verify credential" / "View certificate", only when the link or file exists. */
 export function CertificationActions({ certification, size = "md" }: { certification: Certification; size?: "md" | "lg" }) {
+  const { dict } = useI18n();
+  const t = dict.certifications;
   if (!certification.credentialUrl && !certification.certificateFile) return null;
+
   return (
     <div className="flex flex-wrap gap-2">
       {certification.credentialUrl && (
@@ -12,9 +18,9 @@ export function CertificationActions({ certification, size = "md" }: { certifica
           href={certification.credentialUrl}
           external
           size={size}
-          aria-label={`Verify ${certification.title} credential (opens in a new tab)`}
+          aria-label={`${t.verify}: ${certification.title} (${dict.common.opensInNewTab})`}
         >
-          Verify credential
+          {t.verify}
           <ArrowUpRight className="size-4" aria-hidden />
         </ButtonLink>
       )}
@@ -24,10 +30,10 @@ export function CertificationActions({ certification, size = "md" }: { certifica
           external
           variant="secondary"
           size={size}
-          aria-label={`View ${certification.title} certificate (opens in a new tab)`}
+          aria-label={`${t.viewCertificate}: ${certification.title} (${dict.common.opensInNewTab})`}
         >
           <FileText className="size-4" aria-hidden />
-          View certificate
+          {t.viewCertificate}
         </ButtonLink>
       )}
     </div>
