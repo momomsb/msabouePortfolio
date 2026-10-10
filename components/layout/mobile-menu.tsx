@@ -1,10 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import { ArrowUpRight, X } from "lucide-react";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 import { Logo } from "@/components/layout/logo";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SocialIcon } from "@/components/ui/brand-icons";
 import { useI18n } from "@/i18n/locale-provider";
 import { getAvailableSocials, socialLinkProps } from "@/lib/content";
@@ -104,7 +106,8 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
                       aria-current={active ? "location" : undefined}
                       className="group flex items-baseline gap-4 py-4"
                     >
-                      <span className="font-mono text-xs text-subtle">{pad(index + 1)}</span>
+                      {/* Same numbers as the section headers ("[03]"); Home is 00. */}
+                      <span className="font-mono text-xs text-subtle">{pad(item.index ?? 0)}</span>
                       <span
                         className={cn(
                           "font-display text-3xl font-medium tracking-tight transition-colors sm:text-4xl",
@@ -148,6 +151,13 @@ export function MobileMenu({ open, activeSection, onClose }: MobileMenuProps) {
                   ))}
                 </ul>
               )}
+              {/* Own layout namespace: the header copies of these toggles share the same layoutIds. */}
+              <LayoutGroup id="mobile-menu">
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <LanguageToggle />
+                </div>
+              </LayoutGroup>
               <p className="label-mono text-subtle">
                 {content.profile.role} · {content.profile.location}
               </p>

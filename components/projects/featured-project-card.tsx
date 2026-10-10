@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ScreenshotsButton } from "@/components/projects/screenshots-button";
 import { SignalVisual } from "@/components/projects/signal-visual";
+import { ParallaxElement } from "@/components/transitions/parallax-element";
 import { Reveal } from "@/components/ui/reveal";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { TagList } from "@/components/ui/tag";
@@ -14,11 +15,15 @@ export async function FeaturedProjectCard({ project }: { project: Project }) {
   // The cover's pixel size comes from its gallery entry, so it can be shown uncropped.
   const cover = project.gallery?.find((shot) => shot.src === project.image);
   return (
-    <Reveal>
+    <Reveal id="featured-project">
       <SpotlightCard className="brackets overflow-hidden rounded-3xl border border-line-strong bg-surface">
         <article className="grid lg:grid-cols-2">
           <div className="flex flex-col p-6 sm:p-10">
-            <p className="label-mono text-accent">{t.featured}</p>
+            {/* Same node as the end of the experience timeline: the internship led here. */}
+            <p className="flex items-center gap-3 label-mono text-accent">
+              <span aria-hidden className="size-[7px] rounded-full bg-accent shadow-[0_0_12px_2px_rgb(45_226_255/0.6)]" />
+              {t.featured}
+            </p>
             <h3 className="mt-5 text-4xl font-medium tracking-tight text-fg sm:text-5xl">{project.title}</h3>
             {project.context && <p className="mt-3 font-mono text-xs text-subtle">{project.context}</p>}
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{project.description}</p>
@@ -37,14 +42,16 @@ export async function FeaturedProjectCard({ project }: { project: Project }) {
             <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
             {cover ? (
               <div className="relative flex h-full items-center p-4 sm:p-8">
-                <Image
-                  src={cover.src}
-                  alt={`${project.title}, ${t.coverAlt}`}
-                  width={cover.width}
-                  height={cover.height}
-                  sizes="(min-width: 1024px) 560px, 100vw"
-                  className="h-auto w-full rounded-xl border border-line-strong shadow-[0_24px_60px_-24px_rgb(0_0_0/0.6)]"
-                />
+                <ParallaxElement distance={14} className="w-full">
+                  <Image
+                    src={cover.src}
+                    alt={`${project.title}, ${t.coverAlt}`}
+                    width={cover.width}
+                    height={cover.height}
+                    sizes="(min-width: 1024px) 560px, 100vw"
+                    className="h-auto w-full rounded-xl border border-line-strong shadow-[0_24px_60px_-24px_rgb(0_0_0/0.6)]"
+                  />
+                </ParallaxElement>
               </div>
             ) : project.image ? (
               <Image

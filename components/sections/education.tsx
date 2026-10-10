@@ -1,4 +1,5 @@
 import { BookOpen, GraduationCap, MapPin, School, type LucideIcon } from "lucide-react";
+import { ParallaxElement } from "@/components/transitions/parallax-element";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import type { Locale } from "@/i18n/config";
@@ -56,12 +57,14 @@ function EducationCard({ entry, locale, dict, featured = false }: EducationCardP
   return (
     <article className={cn("relative h-full overflow-hidden panel", featured && "brackets")}>
       {featured && entry.shortName && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -right-4 -bottom-10 font-display text-[9rem] leading-none font-semibold tracking-tighter text-fg/[0.03] select-none sm:text-[13rem]"
-        >
-          {entry.shortName}
-        </span>
+        <ParallaxElement distance={30} className="pointer-events-none absolute -right-4 -bottom-10">
+          <span
+            aria-hidden
+            className="font-display text-[9rem] leading-none font-semibold tracking-tighter text-fg/[0.03] select-none sm:text-[13rem]"
+          >
+            {entry.shortName}
+          </span>
+        </ParallaxElement>
       )}
       <div className={cn("relative grid gap-6", featured ? "p-6 sm:p-10 md:grid-cols-[auto_1fr] md:gap-8" : "p-6 sm:p-8")}>
         <span

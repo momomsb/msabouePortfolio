@@ -1,4 +1,5 @@
 import { Brain, Cloud, Database, type LucideIcon } from "lucide-react";
+import { TechStream } from "@/components/transitions/tech-stream";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
@@ -13,8 +14,10 @@ const icons: Record<EngineeringDomain["icon"], LucideIcon> = {
 
 export async function EngineeringProfile() {
   const { dict, content } = await getI18n();
+  const projectTech = [...new Set(content.projects.flatMap((project) => project.technologies))];
   return (
     <Section id="skills">
+      <TechStream items={projectTech} className="-mt-8 mb-20" />
       <SectionHeader id="skills" index={4} tag={dict.skills.tag} title={dict.skills.title} description={dict.skills.description} />
 
       <ul className="grid gap-4 md:grid-cols-3">

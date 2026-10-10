@@ -1,4 +1,5 @@
 import { TechExplorer, type TechGroup } from "@/components/sections/tech-stack/tech-explorer";
+import { SectionTransition } from "@/components/transitions/section-transition";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { getI18n } from "@/i18n/server";
@@ -29,9 +30,12 @@ export async function TechStack() {
         title={dict.techStack.title}
         description={dict.techStack.description}
       />
-      <Reveal>
-        <TechExplorer groups={groups} />
-      </Reveal>
+      {/* Skills → Certifications: what I build hands over to what I learn. */}
+      <SectionTransition>
+        <Reveal>
+          <TechExplorer groups={groups} />
+        </Reveal>
+      </SectionTransition>
     </Section>
   );
 }

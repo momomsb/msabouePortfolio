@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
+import { AmbientBackground } from "@/components/transitions/ambient-background";
+import { ScrollProvider } from "@/components/transitions/scroll-provider";
+import { SectionIndicator } from "@/components/transitions/section-indicator";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import { defaultLocale, hasLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -90,11 +93,15 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(getPersonJsonLd(locale)) }} />
         <LocaleProvider locale={locale}>
           <MotionProvider>
-            <Navbar />
-            <main id="main" tabIndex={-1} className="outline-none">
-              {children}
-            </main>
-            <Footer />
+            <ScrollProvider>
+              <AmbientBackground />
+              <Navbar />
+              <main id="main" tabIndex={-1} className="outline-none">
+                {children}
+              </main>
+              <Footer />
+              <SectionIndicator />
+            </ScrollProvider>
           </MotionProvider>
         </LocaleProvider>
       </body>

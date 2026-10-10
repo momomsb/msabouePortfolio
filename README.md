@@ -70,6 +70,7 @@ app/
 components/
   layout/               navbar, theme & language toggles, mobile menu, footer
   sections/             one component per home section
+  transitions/          scroll engine (Lenis + scroll spy), section transitions, reveals, parallax
   projects/ certifications/ contact/
   ui/                   design-system primitives (Button, Section, Reveal, Tag…)
 data/                   all editable content (bilingual)

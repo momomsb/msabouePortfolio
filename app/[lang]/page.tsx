@@ -6,6 +6,7 @@ import { EngineeringProfile } from "@/components/sections/engineering-profile";
 import { Experience } from "@/components/sections/experience";
 import { Hero } from "@/components/sections/hero/hero";
 import { Projects } from "@/components/sections/projects";
+import { SectionBridge } from "@/components/transitions/section-bridge";
 import { TechStack } from "@/components/sections/tech-stack/tech-stack";
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <TechStack />
       <Certifications />
       <Education />
+      <SectionBridge />
       <Contact />
     </>
   );

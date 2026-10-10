@@ -1,3 +1,4 @@
+import { SectionTransition } from "@/components/transitions/section-transition";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { getI18n } from "@/i18n/server";
@@ -26,7 +27,8 @@ export async function About() {
 
   return (
     <Section id="about">
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      {/* About → Experience: the identity lifts away as the career timeline takes over. */}
+      <SectionTransition className="grid gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <SectionHeader id="about" index={1} tag={dict.about.tag} title={dict.about.title} />
           <Reveal>
@@ -50,7 +52,7 @@ export async function About() {
             </dl>
           </div>
         </Reveal>
-      </div>
+      </SectionTransition>
     </Section>
   );
 }

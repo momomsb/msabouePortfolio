@@ -20,6 +20,7 @@
   --color-accent-strong: #7cefff;
   --color-accent-deep: #0b8fa6;
   --color-violet: #8f80ff;
+  --color-blue: #4f7cff;
   --color-success: #3ee0a1;
   --color-danger: #ff6b7d;
 
@@ -105,6 +106,7 @@
     --color-accent-strong: #155e75;
     --color-accent-deep: #164e63;
     --color-violet: #5b4bd6;
+    --color-blue: #3b5bdb;
     --color-success: #047857;
     --color-danger: #c81e3a;
     --shadow-glow: 0 0 0 1px rgb(14 116 144 / 0.25), 0 8px 30px -10px rgb(14 116 144 / 0.35);
@@ -122,8 +124,28 @@
     }
   }
 
+  /* Lenis drives the scroll on desktop: native smoothing would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  html.lenis.lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  /* Sections receive focus after an in-page jump; the outline would frame the whole block. */
+  main section[tabindex="-1"]:focus {
+    outline: none;
+  }
+
   body {
-    @apply bg-ink font-sans text-fg antialiased;
+    @apply font-sans text-fg antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
   }

@@ -155,6 +155,8 @@ export interface NavItemData {
   label: Text;
   /** Section id: the link points to /{locale}#id. */
   sectionId: string;
+  /** Number shown in the section header ("[03]"); Home has none. */
+  index?: number;
 }
 
 /* ── Resolved (single-locale) shapes used by components ─────────── */

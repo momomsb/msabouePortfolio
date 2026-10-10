@@ -1,5 +1,6 @@
 "use client";
 
+import type { MotionValue } from "motion/react";
 import { useEffect, useRef } from "react";
 
 /**
@@ -7,6 +8,7 @@ import { useEffect, useRef } from "react";
  * travelling along them. Plain Canvas 2D (no WebGL) to keep the hero light.
  * - Pauses when off-screen or when the tab is hidden.
  * - Renders a single static frame when the user prefers reduced motion.
+ * - `speed` (0–1) slows the drift, e.g. while the hero scrolls away.
  */
 
 interface Node {
@@ -33,7 +35,7 @@ const PALETTES = {
   light: { accent: "14, 116, 144", violet: "91, 75, 214", node: "15, 23, 42", linkAlpha: 0.22, nodeAlpha: 0.4 },
 };
 
-export function DataNetwork({ className }: { className?: string }) {
+export function DataNetwork({ className, speed }: { className?: string; speed?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -93,16 +95,17 @@ export function DataNetwork({ className }: { className?: string }) {
     }
 
     function step() {
+      const pace = speed?.get() ?? 1;
       for (const node of nodes) {
-        node.x += node.vx;
-        node.y += node.vy;
+        node.x += node.vx * pace;
+        node.y += node.vy * pace;
         if (node.x < -20) node.x = width + 20;
         if (node.x > width + 20) node.x = -20;
         if (node.y < -20) node.y = height + 20;
         if (node.y > height + 20) node.y = -20;
       }
-      if (packets.length < 14 && Math.random() < 0.08) spawnPacket();
-      packets = packets.filter((packet) => (packet.t += packet.speed) < 1);
+      if (packets.length < 14 && Math.random() < 0.08 * pace) spawnPacket();
+      packets = packets.filter((packet) => (packet.t += packet.speed * pace) < 1);
     }
 
     function draw() {
@@ -227,7 +230,7 @@ export function DataNetwork({ className }: { className?: string }) {
       window.removeEventListener("pointermove", onPointerMove);
       document.documentElement.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, []);
+  }, [speed]);
 
   return <canvas ref={canvasRef} aria-hidden className={className} />;
 }

@@ -1,32 +1,30 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll, useSpring } from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { Logo } from "@/components/layout/logo";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { ScrollProgress } from "@/components/transitions/scroll-progress";
+import { useScrollSections } from "@/components/transitions/scroll-provider";
 import { useI18n } from "@/i18n/locale-provider";
-import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
+
+/** Fast, slightly damped spring: the capsule glides rather than bounces. */
+const capsuleSpring = { type: "spring", stiffness: 520, damping: 42, mass: 0.9 } as const;
 
 export function Navbar() {
   const { locale, dict, content } = useI18n();
-  const pathname = usePathname();
-  const isHome = pathname === `/${locale}`;
-  const activeSection = useActiveSection(
-    content.navigation.map((item) => item.sectionId),
-    isHome,
-  );
+  const { active: activeSection } = useScrollSections();
   const [scrolled, setScrolled] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { scrollY, scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40, restDelta: 0.001 });
+  const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 16));
 
   const closeMenu = useCallback(() => {
@@ -38,21 +36,25 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300",
-          scrolled ? "border-b border-line/80 bg-ink/75 backdrop-blur-xl" : "border-b border-transparent",
+          "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
+          scrolled ? "border-line/70 bg-ink/75 shadow-[0_12px_32px_-20px_rgb(0_0_0/0.55)] backdrop-blur-xl" : "border-transparent",
         )}
       >
+        {/* Compacts slightly once the page scrolls (layout stays the same). */}
         <nav
           aria-label={dict.nav.main}
-          className="mx-auto flex h-(--nav-height) max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+          className={cn(
+            "mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-[height] duration-300 ease-out sm:px-6 lg:px-8",
+            scrolled ? "h-15" : "h-(--nav-height)",
+          )}
         >
           <Logo />
 
-          <ul className="hidden items-center gap-0.5 lg:flex">
+          <ul className="hidden items-center gap-0.5 lg:flex" onPointerLeave={() => setHovered(null)}>
             {content.navigation.map((item) => {
               const active = activeSection === item.sectionId;
               return (
-                <li key={item.sectionId}>
+                <li key={item.sectionId} onPointerEnter={() => setHovered(item.sectionId)}>
                   <Link
                     href={`/${locale}#${item.sectionId}`}
                     aria-current={active ? "location" : undefined}
@@ -61,11 +63,18 @@ export function Navbar() {
                       active ? "text-fg" : "text-muted hover:text-fg",
                     )}
                   >
+                    {hovered === item.sectionId && !active && (
+                      <motion.span
+                        layoutId="nav-hover"
+                        className="absolute inset-0 z-0 rounded-full bg-raised/50"
+                        transition={capsuleSpring}
+                      />
+                    )}
                     {active && (
                       <motion.span
                         layoutId="nav-active"
                         className="absolute inset-0 z-0 rounded-full border border-line-strong bg-raised"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                        transition={capsuleSpring}
                       />
                     )}
                     <span className="relative z-10">{item.label}</span>
@@ -91,7 +100,7 @@ export function Navbar() {
             </button>
           </div>
         </nav>
-        <motion.div aria-hidden style={{ scaleX: progress }} className="absolute inset-x-0 bottom-0 h-px origin-left bg-accent/70" />
+        <ScrollProgress />
       </header>
 
       <MobileMenu open={menuOpen} activeSection={activeSection} onClose={closeMenu} />

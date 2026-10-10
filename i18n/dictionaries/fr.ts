@@ -64,6 +64,7 @@ export const fr: Dictionary = {
     responsibilities: "Responsabilités",
     technologies: "Technologies",
     details: "Survolez ou touchez pour voir les détails",
+    ledTo: "A mené à",
     types: { internship: "Stage", "full-time": "CDI", "part-time": "Temps partiel", freelance: "Freelance" },
   },
   projects: {

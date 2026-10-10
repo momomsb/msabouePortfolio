@@ -62,6 +62,7 @@ export const en = {
     responsibilities: "Responsibilities",
     technologies: "Technologies",
     details: "Hover or tap for details",
+    ledTo: "Led to",
     types: { internship: "Internship", "full-time": "Full-time", "part-time": "Part-time", freelance: "Freelance" },
   },
   projects: {

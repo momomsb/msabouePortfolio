@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { MagneticButton } from "@/components/transitions/magnetic-button";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
@@ -128,17 +129,19 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Button type="submit" size="lg" disabled={sending} className="sm:min-w-44">
-          {sending ? (
-            <>
-              <Loader2 className="size-4 animate-spin" aria-hidden /> {t.sending}
-            </>
-          ) : (
-            <>
-              {t.send} <ArrowRight className="size-4 transition-transform group-hover/button:translate-x-0.5" aria-hidden />
-            </>
-          )}
-        </Button>
+        <MagneticButton>
+          <Button type="submit" size="lg" disabled={sending} className="sm:min-w-44">
+            {sending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden /> {t.sending}
+              </>
+            ) : (
+              <>
+                {t.send} <ArrowRight className="size-4 transition-transform group-hover/button:translate-x-0.5" aria-hidden />
+              </>
+            )}
+          </Button>
+        </MagneticButton>
 
         <div id="contact-status" role="status" aria-live="polite" className="min-h-6 text-sm">
           <AnimatePresence mode="wait">
