@@ -7,6 +7,7 @@ export const experiences: ExperienceData[] = [
     company: "Attijariwafa Bank",
     team: "Digital Center",
     role: { en: "Intern", fr: "Stagiaire" },
+    location: "Casablanca, Maroc",
     type: "internship",
     title: {
       en: "AI agent for technical analysis of the Casablanca Stock Exchange",

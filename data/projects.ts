@@ -8,6 +8,7 @@ function shot(folder: string, file: string, alt: Localized, width: number, heigh
 
 const streamEtl = (file: string, alt: Localized) => shot("StreamETL", file, alt, 3200, 1800);
 const healthCare = (file: string, alt: Localized) => shot("HealthCare", file, alt, 2880, 1800);
+const alumni = (file: string, alt: Localized, width: number, height: number) => shot("Alumni-ENSAJ", file, alt, width, height);
 
 /**
  * Projects: a short presentation, the technologies used and screenshots.
@@ -56,7 +57,7 @@ export const projects: ProjectData[] = [
     ],
   },
   {
-    title: { en: "Alumni Career Trajectory Platform", fr: "Plateforme d'analyse des trajectoires alumni" },
+    title: { en: "ENSAJ Alumni: Career Analytics Platform", fr: "ENSAJ Alumni : plateforme d'analyse des carrières" },
     slug: "alumni-career-trajectories",
     description: {
       en: "An intelligent, data-driven platform for predictive analysis of alumni career trajectories, built on web scraping and LLMs.",
@@ -64,8 +65,26 @@ export const projects: ProjectData[] = [
     },
     categories: ["AI", "Data", "Backend", "Frontend"],
     technologies: ["LLMs", "Selenium", "Requests", "BeautifulSoup", "Pandas", "PostgreSQL", "FastAPI", "React"],
-    image: null,
+    image: "/projects/Alumni-ENSAJ/Analyse_Par_Filiere.png",
     featured: false,
+    gallery: [
+      alumni("Dashboard-1", { en: "Global alumni overview", fr: "Vue globale des alumni" }, 1893, 819),
+      alumni(
+        "Dashboard-2",
+        { en: "Geographic distribution and top hiring companies", fr: "Distribution géographique et principales entreprises d'embauche" },
+        1893,
+        817,
+      ),
+      alumni("Analyse_Par_Filiere", { en: "Analysis by program", fr: "Analyse par filière" }, 1894, 819),
+      alumni("Trajectoire_carriere", { en: "Career trajectories", fr: "Trajectoires de carrière" }, 1892, 818),
+      alumni(
+        "ML_Tendances_Sectorielles",
+        { en: "ML projection of sector trends", fr: "Prédiction ML des tendances sectorielles" },
+        1893,
+        818,
+      ),
+      alumni("Insight_strategic", { en: "Strategic insights for the school", fr: "Insights stratégiques pour l'école" }, 1895, 818),
+    ],
   },
   {
     title: { en: "Boussole: Job-Market Course Recommender", fr: "Boussole : recommandation de formations selon le marché" },
