@@ -29,8 +29,6 @@ export interface TechItem {
   logo: BrandLogo | null;
   icon: GenericIcon;
   domains: string[];
-  /** Experiences and projects where the tool is used. */
-  usedIn: string[];
 }
 
 export interface TechGroup {
@@ -59,7 +57,7 @@ const genericIcons: Record<GenericIcon, LucideIcon> = {
 
 const ALL = "all";
 
-/** Category tabs + logo tiles; hovering, focusing or tapping a tile shows where the tool is used. */
+/** Category tabs + logo tiles; hovering, focusing or tapping a tile shows its details. */
 export function TechExplorer({ groups }: { groups: TechGroup[] }) {
   const { dict } = useI18n();
   const t = dict.techStack;
@@ -180,7 +178,7 @@ export function TechExplorer({ groups }: { groups: TechGroup[] }) {
           </motion.div>
         </AnimatePresence>
 
-        {/* Where the inspected tool is used */}
+        {/* Details of the inspected tool */}
         <div aria-live="polite" className="mx-auto mt-10 min-h-16 max-w-3xl rounded-2xl border border-line bg-surface/80 px-5 py-4 text-sm">
           {inspected ? (
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-6">
@@ -188,18 +186,12 @@ export function TechExplorer({ groups }: { groups: TechGroup[] }) {
                 <TechLogo item={inspected} className="size-5" />
                 {inspected.name}
               </p>
-              <div className="space-y-1.5 text-muted">
-                {inspected.domains.length > 0 && (
-                  <p>
-                    <span className="mr-2 label-mono text-subtle">{t.domains}</span>
-                    {inspected.domains.join(" · ")}
-                  </p>
-                )}
-                <p>
-                  <span className="mr-2 label-mono text-subtle">{t.usedIn}</span>
-                  {inspected.usedIn.length === 0 ? t.notDocumented : <span className="text-fg">{inspected.usedIn.join(" · ")}</span>}
+              {inspected.domains.length > 0 && (
+                <p className="text-muted">
+                  <span className="mr-2 label-mono text-subtle">{t.domains}</span>
+                  {inspected.domains.join(" · ")}
                 </p>
-              </div>
+              )}
             </div>
           ) : (
             <p className="text-center text-subtle">{t.hint}</p>

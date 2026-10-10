@@ -17,14 +17,35 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   const [viewerOpen, setViewerOpen] = useState(false);
   const shots = project.gallery ?? [];
 
-  const cover = project.image ? (
-    <Image
-      src={project.image}
-      alt={`${project.title}, ${t.coverAlt}`}
-      fill
-      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-      className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-    />
+  // Covers come in many proportions: show them whole, framed, at their own ratio.
+  const coverShot = shots.find((shot) => shot.src === project.image);
+  const cover = coverShot ? (
+    <>
+      <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
+      <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-5">
+        <Image
+          src={coverShot.src}
+          alt={`${project.title}, ${t.coverAlt}`}
+          width={coverShot.width}
+          height={coverShot.height}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          className="h-auto max-h-full w-auto max-w-full rounded-lg border border-line-strong shadow-[0_16px_40px_-20px_rgb(0_0_0/0.6)] transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
+    </>
+  ) : project.image ? (
+    <>
+      <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
+      <div className="absolute inset-4 sm:inset-5">
+        <Image
+          src={project.image}
+          alt={`${project.title}, ${t.coverAlt}`}
+          fill
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          className="object-contain drop-shadow-[0_16px_24px_rgb(0_0_0/0.45)] transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
+    </>
   ) : (
     <>
       <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
@@ -34,7 +55,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 
   return (
     <SpotlightCard className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface/80 transition-colors duration-300 hover:border-line-strong">
-      <div className="relative aspect-[16/9] overflow-hidden border-b border-line bg-ink/60">
+      <div className="relative aspect-[16/10] overflow-hidden border-b border-line bg-ink/60">
         {shots.length > 0 ? (
           <button
             type="button"

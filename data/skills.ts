@@ -3,71 +3,24 @@ import type { EngineeringDomainData, SkillGroupData } from "@/types";
 /** "Engineering profile": domains of work and the tools used in each. */
 export const engineeringDomains: EngineeringDomainData[] = [
   {
-    id: "ai-ml",
-    title: { en: "AI / Machine Learning", fr: "IA / Machine Learning" },
+    id: "ai",
+    title: { en: "AI · ML / DL", fr: "IA · ML / DL" },
     summary: {
-      en: "LLM agents, retrieval-augmented generation, NLP and classical ML.",
-      fr: "Agents LLM, RAG, NLP et machine learning classique.",
+      en: "Machine learning, deep learning, NLP and LLM agents with retrieval-augmented generation.",
+      fr: "Machine learning, deep learning, NLP et agents LLM avec RAG.",
     },
     icon: "brain",
-    technologies: ["Python", "Scikit-learn", "TensorFlow", "NLP", "LLMs", "LangChain", "LangGraph", "Hugging Face", "RAG"],
+    technologies: ["Python", "Scikit-learn", "TensorFlow", "Hugging Face", "NLP", "LLMs", "LangChain", "LangGraph", "RAG"],
   },
   {
-    id: "data-engineering",
-    title: "Data Engineering & ETL",
+    id: "data",
+    title: { en: "Data Engineering & Big Data", fr: "Data Engineering & Big Data" },
     summary: {
-      en: "Collecting, cleaning and moving data so it can be trusted downstream.",
-      fr: "Collecter, nettoyer et acheminer la donnée pour qu'elle soit fiable en aval.",
-    },
-    icon: "workflow",
-    technologies: ["Pandas", "ETL pipelines", "Talend", "SSIS", "Selenium", "BeautifulSoup"],
-  },
-  {
-    id: "analytics-bi",
-    title: "Analytics & BI",
-    summary: {
-      en: "Decision chains, OLAP and dashboards that turn data into answers.",
-      fr: "Chaînes décisionnelles, OLAP et tableaux de bord qui transforment la donnée en réponses.",
-    },
-    icon: "chart",
-    technologies: ["Power BI", "SSAS", "SSRS", "Excel", "Matplotlib", "Seaborn"],
-  },
-  {
-    id: "databases",
-    title: { en: "Databases", fr: "Bases de données" },
-    summary: {
-      en: "Relational and document stores, modeled for the workload.",
-      fr: "Bases relationnelles et documentaires, modélisées selon l'usage.",
+      en: "Pipelines that collect, transform and move data, from batch ETL to distributed processing and streaming.",
+      fr: "Des pipelines qui collectent, transforment et acheminent la donnée, de l'ETL batch au traitement distribué et au streaming.",
     },
     icon: "database",
-    technologies: ["SQL", "PostgreSQL", "MySQL", "SQL Server", "MongoDB", "NoSQL"],
-  },
-  {
-    id: "backend",
-    title: { en: "Backend Engineering", fr: "Ingénierie backend" },
-    summary: {
-      en: "APIs and services that put data and models into production.",
-      fr: "APIs et services qui mettent la donnée et les modèles en production.",
-    },
-    icon: "server",
-    technologies: ["FastAPI", "Java", "Spring Boot"],
-  },
-  {
-    id: "frontend",
-    title: { en: "Frontend Development", fr: "Développement frontend" },
-    summary: { en: "Interfaces that make complex systems usable.", fr: "Des interfaces qui rendent les systèmes complexes utilisables." },
-    icon: "layout",
-    technologies: ["React", "Next.js", "JavaScript", "TailwindCSS"],
-  },
-  {
-    id: "big-data",
-    title: "Big Data",
-    summary: {
-      en: "Distributed storage, processing and streaming at scale.",
-      fr: "Stockage, traitement distribué et streaming à grande échelle.",
-    },
-    icon: "layers",
-    technologies: ["Hadoop", "Hive", "Spark", "PySpark", "Kafka"],
+    technologies: ["SQL", "Pandas", "ETL pipelines", "Talend", "SSIS", "Hadoop", "Hive", "Spark", "PySpark", "Kafka"],
   },
   {
     id: "cloud-devops",

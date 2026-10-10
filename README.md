@@ -1,6 +1,6 @@
 # Mohamed M'Saboue · AI / Data Engineer Portfolio
 
-"Digital Lab" portfolio built with Next.js 16 (App Router, Cache Components), TypeScript, Tailwind CSS v4 and Motion.
+Portfolio built with Next.js 16 (App Router, Cache Components), TypeScript, Tailwind CSS v4 and Motion.
 Bilingual (English / French) with a dark and a light theme.
 
 ```bash
@@ -41,8 +41,6 @@ Missing content (empty results, missing links, no CV…) shows a purple **TODO**
 - **Certificates**: badges and certificate files go in `public/certifications/` (`image` for a badge, `certificateFile` for the certificate itself: an image shows a preview + "View certificate").
 - **Verification links**: paste each link in the `credentialUrl` field of `data/certifications.ts`; the "Verify credential" button appears automatically.
 
-The "Ask my AI" assistant builds its knowledge from the same files, so it updates automatically.
-
 Interface strings (buttons, section titles, form messages…) live in `i18n/dictionaries/en.ts` and `fr.ts`. TypeScript enforces that both files have the same keys.
 
 ## Languages and theme
@@ -55,31 +53,28 @@ Interface strings (buttons, section titles, form messages…) live in `i18n/dict
 
 Copy `.env.example` to `.env.local`. All keys are optional; the site works without them.
 
-| Variable                                                   | Scope  | Effect                                                                                                              |
-| ---------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`                                     | public | Canonical URL for metadata, sitemap, JSON-LD (falls back to Vercel's production URL)                                |
-| `ANTHROPIC_API_KEY`                                        | server | Enables Claude for "Ask my AI". Without it, the assistant runs in demo mode with deterministic answers from `data/` |
-| `ANTHROPIC_MODEL`                                          | server | Model override (default `claude-opus-5-5`)                                                                          |
-| `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` | server | Contact form delivery via Resend. Without them, the form tells visitors it isn't connected yet                      |
+| Variable                                                   | Scope  | Effect                                                                                         |
+| ---------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                                     | public | Canonical URL for metadata, sitemap, JSON-LD (falls back to Vercel's production URL)           |
+| `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` | server | Contact form delivery via Resend. Without them, the form tells visitors it isn't connected yet |
 
-Secrets are only read in server code (`app/api/*`, `lib/chat/claude.ts`, `lib/email.ts`). `.env*` files are git-ignored except `.env.example`.
+Secrets are only read in server code (`app/api/*`, `lib/email.ts`). `.env*` files are git-ignored except `.env.example`.
 
 ## Architecture
 
 ```
 app/
   [lang]/               localized pages (root layout, home, OG image)
-  api/chat              "Ask my AI" (Claude or demo responder), rate-limited
   api/contact           contact form (validation, honeypot, rate limit, Resend)
   global-not-found.tsx  bilingual 404 for unknown URLs
 components/
   layout/               navbar, theme & language toggles, mobile menu, footer
   sections/             one component per home section
-  projects/ certifications/ contact/ ai/
+  projects/ certifications/ contact/
   ui/                   design-system primitives (Button, Section, Reveal, Tag…)
 data/                   all editable content (bilingual)
 i18n/                   locales, dictionaries, locale helpers
-lib/                    content helpers, SEO, theme, tech logos, validation, rate limiting, chat
+lib/                    content helpers, SEO, theme, tech logos, validation, rate limiting
 proxy.ts                locale redirect for "/" and unprefixed paths
 types/                  content and API contracts
 ```

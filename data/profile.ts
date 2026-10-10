@@ -2,8 +2,7 @@ import type { Locale, Text } from "@/i18n/config";
 import type { Language } from "@/types";
 
 /**
- * Core identity. Edit here: every section, the SEO metadata and the
- * "Ask my AI" knowledge base read from this file.
+ * Core identity. Edit here: every section and the SEO metadata read from this file.
  * Text fields: a plain string (same in both languages) or `{ en, fr }`.
  */
 export const profile = {
@@ -20,8 +19,8 @@ export const profile = {
     fr: "Je construis des systèmes intelligents, de la donnée brute à la production.",
   } as Text,
   summary: {
-    en: "Final-year computer engineering student (Data & AI) at ENSA El Jadida, working at the intersection of software engineering, data engineering and artificial intelligence.",
-    fr: "Élève ingénieur en dernière année d'informatique (Data & IA) à l'ENSA d'El Jadida, au croisement du génie logiciel, de la data engineering et de l'intelligence artificielle.",
+    en: "Final-year computer engineering student (Data & AI) at ENSA El Jadida, I design data systems, process data at scale and build AI-powered solutions.",
+    fr: "Élève ingénieur en dernière année d'informatique (Data & IA) à l'ENSA d'El Jadida, je conçois des systèmes data, traite des données à grande échelle et développe des solutions fondées sur l'intelligence artificielle.",
   } as Text,
   availability: {
     available: true,

@@ -8,6 +8,7 @@ function shot(folder: string, file: string, alt: Localized, width: number, heigh
 
 const streamEtl = (file: string, alt: Localized) => shot("StreamETL", file, alt, 3200, 1800);
 const healthCare = (file: string, alt: Localized) => shot("HealthCare", file, alt, 2880, 1800);
+const stockAgent = (file: string, alt: Localized, width = 2880, height = 1800) => shot("StockAgent", file, alt, width, height);
 const alumni = (file: string, alt: Localized, width: number, height: number) => shot("Alumni-ENSAJ", file, alt, width, height);
 
 /**
@@ -23,14 +24,27 @@ export const projects: ProjectData[] = [
     title: "AI Stock Analyst",
     slug: "ai-stock-analyst",
     description: {
-      en: "An AI agent dedicated to the technical analysis of the Casablanca Stock Exchange. It computes market indicators and explains them, grounded by retrieval.",
-      fr: "Un agent IA dédié à l'analyse technique de la Bourse de Casablanca. Il calcule les indicateurs de marché et les explique, en s'appuyant sur la recherche documentaire (RAG).",
+      en: "A ReAct AI agent for the technical analysis of the Casablanca Stock Exchange. It analyzes stocks through tools built on a technical analysis engine, and answers questions on investing and regulations through a RAG tool.",
+      fr: "Un agent IA ReAct d'analyse technique pour la Bourse de Casablanca. Il analyse les valeurs via des outils qui s'appuient sur un moteur d'analyse technique, et répond aux questions sur l'investissement et la réglementation via un outil RAG.",
     },
     context: { en: "Internship · Attijariwafa Bank, Digital Center", fr: "Stage · Attijariwafa Bank, Digital Center" },
     categories: ["AI", "Data", "Backend"],
     technologies: ["Python", "LangChain", "LangGraph", "FastAPI", "PostgreSQL", "Pandas", "RAG", "Embeddings", "Vector Database"],
-    image: null,
+    image: "/projects/StockAgent/01-inscription.png",
     featured: true,
+    gallery: [
+      stockAgent("01-inscription", { en: "Sign up", fr: "Inscription" }),
+      stockAgent("02-connexion", { en: "Sign in and market summary", fr: "Connexion et résumé du marché" }, 1423, 884),
+      stockAgent("03-nouvelle-conversation", { en: "New analysis", fr: "Nouvelle analyse" }),
+      stockAgent("04-conversation-en-cours", { en: "Technical analysis in a conversation", fr: "Analyse technique dans une conversation" }),
+      stockAgent("05-historique", { en: "Conversation history", fr: "Historique des conversations" }, 1427, 888),
+      stockAgent(
+        "06-profil",
+        { en: "Account settings and analysis preferences", fr: "Paramètres du compte et préférences d'analyse" },
+        1392,
+        866,
+      ),
+    ],
   },
   {
     title: "StreamETL",

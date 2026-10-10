@@ -32,5 +32,5 @@ export function getPersonJsonLd(locale: Locale) {
 
 /** Serializes JSON-LD safely for an inline <script> (escapes `<`). */
 export function serializeJsonLd(data: object) {
-  return JSON.stringify(data).replace(/</g, "\u003c");
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ScreenshotsButton } from "@/components/projects/screenshots-button";
 import { SignalVisual } from "@/components/projects/signal-visual";
 import { Reveal } from "@/components/ui/reveal";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
@@ -10,6 +11,8 @@ import type { Project } from "@/types";
 export async function FeaturedProjectCard({ project }: { project: Project }) {
   const { dict } = await getI18n();
   const t = dict.projects;
+  // The cover's pixel size comes from its gallery entry, so it can be shown uncropped.
+  const cover = project.gallery?.find((shot) => shot.src === project.image);
   return (
     <Reveal>
       <SpotlightCard className="brackets overflow-hidden rounded-3xl border border-line-strong bg-surface">
@@ -24,17 +27,32 @@ export async function FeaturedProjectCard({ project }: { project: Project }) {
               <p className="mb-3 label-mono text-subtle">{t.stack}</p>
               <TagList items={project.technologies} />
             </div>
+
+            {project.gallery && project.gallery.length > 0 && (
+              <ScreenshotsButton images={project.gallery} title={project.title} className="mt-auto self-start pt-8" />
+            )}
           </div>
 
           <div className="relative min-h-72 overflow-hidden border-t border-line bg-ink/60 lg:border-t-0 lg:border-l">
             <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
-            {project.image ? (
+            {cover ? (
+              <div className="relative flex h-full items-center p-4 sm:p-8">
+                <Image
+                  src={cover.src}
+                  alt={`${project.title}, ${t.coverAlt}`}
+                  width={cover.width}
+                  height={cover.height}
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="h-auto w-full rounded-xl border border-line-strong shadow-[0_24px_60px_-24px_rgb(0_0_0/0.6)]"
+                />
+              </div>
+            ) : project.image ? (
               <Image
                 src={project.image}
                 alt={`${project.title}, ${t.coverAlt}`}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover object-top"
+                className="object-cover object-left-top"
               />
             ) : (
               <div className="relative flex h-full flex-col justify-center gap-6 py-8">

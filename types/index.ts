@@ -99,7 +99,7 @@ export interface EngineeringDomainData {
   id: string;
   title: Text;
   summary: Text;
-  icon: "brain" | "database" | "server" | "layout" | "layers" | "cloud" | "chart" | "workflow";
+  icon: "brain" | "database" | "cloud";
   technologies: string[];
 }
 
@@ -120,8 +120,6 @@ export interface ExperienceData {
   problem: Text;
   technologies: string[];
   responsibilities: Text[];
-  /** Measured outcomes. Leave empty until real results are documented. */
-  results: Text[];
 }
 
 export type EducationKind = "degree" | "preparatory" | "secondary" | "training";

@@ -2,30 +2,22 @@ import { TechExplorer, type TechGroup } from "@/components/sections/tech-stack/t
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { getI18n } from "@/i18n/server";
-import { getTechnologyUsage } from "@/lib/content";
 import { getBrandLogo } from "@/lib/tech-logos";
 
 export async function TechStack() {
   const { dict, content } = await getI18n();
 
-  // Logos and usage are resolved on the server and shipped as plain props.
+  // Logos and domains are resolved on the server and shipped as plain props.
   const groups: TechGroup[] = content.techStack.map((group) => ({
     id: group.id,
     title: group.title,
     description: group.description ?? "",
-    items: group.skills.map((skill) => {
-      const usage = getTechnologyUsage(content, skill.name);
-      return {
-        name: skill.name,
-        logo: getBrandLogo(skill.logo),
-        icon: skill.icon ?? "code",
-        domains: content.engineeringDomains.filter((domain) => domain.technologies.includes(skill.name)).map((domain) => domain.title),
-        usedIn: [
-          ...usage.experiences.map((experience) => `${dict.experience.types[experience.type]} · ${experience.company}`),
-          ...usage.projects.map((project) => project.title),
-        ],
-      };
-    }),
+    items: group.skills.map((skill) => ({
+      name: skill.name,
+      logo: getBrandLogo(skill.logo),
+      icon: skill.icon ?? "code",
+      domains: content.engineeringDomains.filter((domain) => domain.technologies.includes(skill.name)).map((domain) => domain.title),
+    })),
   }));
 
   return (

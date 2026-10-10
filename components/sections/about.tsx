@@ -1,10 +1,9 @@
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { getI18n } from "@/i18n/server";
-import { pad } from "@/lib/utils";
 
 export async function About() {
-  const { dict, content } = await getI18n();
+  const { locale, dict, content } = await getI18n();
   const { profile } = content;
   const school = content.education.find((entry) => entry.kind === "degree");
 
@@ -18,39 +17,27 @@ export async function About() {
     {
       label: dict.about.languages,
       value: profile.languages.map((language) => language.name).join(" · "),
-      detail: profile.languages.map((language) => `${language.name}: ${language.level.toLowerCase()}`).join(" · "),
+      detail: profile.languages
+        .map((language) => `${language.name}${locale === "fr" ? " : " : ": "}${language.level.toLowerCase()}`)
+        .join(" · "),
     },
     { label: dict.about.location, value: profile.location },
   ];
 
   return (
     <Section id="about">
-      <SectionHeader id="about" index={1} tag={dict.about.tag} title={dict.about.title} />
-
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
+          <SectionHeader id="about" index={1} tag={dict.about.tag} title={dict.about.title} />
           <Reveal>
             <p className="font-display text-2xl leading-snug font-light text-fg sm:text-3xl">{profile.summary}</p>
           </Reveal>
-
-          <Reveal delay={0.1} className="mt-12">
-            <h3 className="mb-5 label-mono text-subtle">{dict.about.interests}</h3>
-            <ol className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
-              {profile.interests.map((interest, index) => (
-                <li key={interest} className="group flex items-center gap-4 bg-surface px-5 py-4 transition-colors hover:bg-raised">
-                  <span className="font-mono text-xs text-subtle transition-colors group-hover:text-accent">{pad(index + 1)}</span>
-                  <span className="text-[0.9375rem] text-fg">{interest}</span>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
         </div>
 
-        <Reveal delay={0.15} className="lg:col-span-5">
+        <Reveal delay={0.1} className="lg:col-span-5">
           <div className="brackets overflow-hidden panel">
-            <div className="flex items-center justify-between border-b border-line px-5 py-3">
+            <div className="border-b border-line px-5 py-3">
               <span className="label-mono text-subtle">{dict.about.specSheet}</span>
-              <span className="font-mono text-[0.6875rem] text-subtle">profile.ts</span>
             </div>
             <dl>
               {spec.map((row) => (

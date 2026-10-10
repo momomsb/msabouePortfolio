@@ -1,8 +1,7 @@
 import type { CertificationData } from "@/types";
 
 /**
- * Certifications: the section, its filters, the spotlight and the AI assistant
- * update automatically. Only add certifications you hold.
+ * Certifications: the section, its filters and the spotlight update automatically. Only add certifications you hold.
  *
  * Files live in /public/certifications. To add a verification link, fill
  * `credentialUrl` ("Verify credential" button appears automatically).
@@ -19,7 +18,7 @@ export const certifications: CertificationData[] = [
     category: "Cloud",
     skills: ["AWS Architecture", "AWS Cloud", "AWS Core Services"],
     image: "/certifications/aws-academy-cloud-foundations.png",
-    credentialUrl: "https://www.credly.com/badges/a4220d70-76ee-4742-bd54-28b4b1488dae/public_url", // ← paste the Cloud Foundations Credly link here
+    credentialUrl: "https://www.credly.com/badges/a4220d70-76ee-4742-bd54-28b4b1488dae/public_url",
     featured: true,
   },
   {
@@ -40,7 +39,7 @@ export const certifications: CertificationData[] = [
     skills: ["Analysis", "Data Ethics", "Data Analysis", "Data Processing"],
     credentialId: "TN7ZMQN52FKR",
     certificateFile: "/certifications/google-foundations-data-data-everywhere.png",
-    credentialUrl: "https://coursera.org/share/ed2a99650de91b3df1277c60e445b3d5", // ← paste your Coursera verification link here
+    credentialUrl: "https://coursera.org/share/ed2a99650de91b3df1277c60e445b3d5",
   },
   {
     title: "GitHub Foundations",
@@ -50,6 +49,6 @@ export const certifications: CertificationData[] = [
     skills: ["Git", "GitHub", "Software Project Management", "Project Planning"],
     credentialId: "#778,736",
     certificateFile: "/certifications/datacamp-github-foundations.png",
-    credentialUrl: "https://www.datacamp.com/completed/statement-of-accomplishment/track/571144efc2fad35c9f67f274917c4630bf170260", // ← paste your DataCamp link here
+    credentialUrl: "https://www.datacamp.com/completed/statement-of-accomplishment/track/571144efc2fad35c9f67f274917c4630bf170260",
   },
 ];

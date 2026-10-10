@@ -2,10 +2,9 @@
 
 import { useId, useState, type PointerEvent } from "react";
 import { ChevronDown } from "lucide-react";
-import { ContentPlaceholder } from "@/components/ui/content-placeholder";
 import { TagList } from "@/components/ui/tag";
 import { useI18n } from "@/i18n/locale-provider";
-import { cn, formatDateRange, formatDuration } from "@/lib/utils";
+import { cn, formatDateRange } from "@/lib/utils";
 import type { Experience } from "@/types";
 
 /**
@@ -20,7 +19,6 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
   const [pinned, setPinned] = useState(false);
   const [hovered, setHovered] = useState(false);
   const open = pinned || hovered;
-  const duration = formatDuration(experience.start, experience.end, locale);
 
   const onMouse = (value: boolean) => (event: PointerEvent) => {
     if (event.pointerType === "mouse") setHovered(value);
@@ -30,7 +28,6 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
     <div className="relative grid gap-6 pb-12 pl-10 md:grid-cols-4 md:gap-10 md:pl-0">
       <div className="md:pr-10 md:text-right">
         <p className="font-mono text-sm text-fg">{formatDateRange(experience.start, experience.end, locale)}</p>
-        {duration && <p className="mt-1 font-mono text-xs text-subtle">{duration}</p>}
       </div>
 
       {/* Timeline node */}
@@ -121,22 +118,6 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
                 <h4 className="mb-4 label-mono text-subtle">{t.technologies}</h4>
                 <TagList items={experience.technologies} />
               </div>
-
-              {experience.results.length > 0 ? (
-                <div>
-                  <h4 className="mb-4 label-mono text-subtle">{t.results}</h4>
-                  <ul className="space-y-3">
-                    {experience.results.map((item) => (
-                      <li key={item} className="flex gap-3 text-[0.9375rem] leading-relaxed text-fg">
-                        <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-success" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <ContentPlaceholder file="experience.ts">Add measured results for this experience.</ContentPlaceholder>
-              )}
             </div>
           </div>
         </div>

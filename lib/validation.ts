@@ -1,5 +1,3 @@
-import { defaultLocale, hasLocale, type Locale } from "@/i18n/config";
-
 /**
  * Minimal runtime validation for API payloads. Never trust client input:
  * every route parses `unknown` through these helpers. Errors are field keys;
@@ -52,34 +50,4 @@ export function validateContact(input: unknown): ValidationResult<ContactPayload
   if (data.message.length < message.min || data.message.length > message.max) errors.push("message");
 
   return errors.length > 0 ? { ok: false, errors } : { ok: true, data };
-}
-
-export interface ChatTurn {
-  role: "user" | "assistant";
-  content: string;
-}
-
-export const CHAT_LIMITS = { maxTurns: 12, maxChars: 800 } as const;
-
-/** Accepts a short alternating history that ends with a user question. */
-export function validateChat(input: unknown): ValidationResult<{ turns: ChatTurn[]; locale: Locale }, "messages"> {
-  if (!isRecord(input) || !Array.isArray(input.messages)) return { ok: false, errors: ["messages"] };
-
-  const turns: ChatTurn[] = [];
-  for (const item of input.messages.slice(-CHAT_LIMITS.maxTurns)) {
-    if (!isRecord(item)) continue;
-    const role = item.role === "assistant" ? "assistant" : item.role === "user" ? "user" : null;
-    const content = typeof item.content === "string" ? item.content.trim().slice(0, CHAT_LIMITS.maxChars) : "";
-    if (!role || !content) continue;
-    // Merge consecutive same-role turns so the history always alternates.
-    const previous = turns.at(-1);
-    if (previous?.role === role) previous.content += `\n${content}`;
-    else turns.push({ role, content });
-  }
-
-  while (turns[0]?.role === "assistant") turns.shift();
-  if (turns.length === 0 || turns.at(-1)?.role !== "user") return { ok: false, errors: ["messages"] };
-
-  const locale = typeof input.locale === "string" && hasLocale(input.locale) ? input.locale : defaultLocale;
-  return { ok: true, data: { turns, locale } };
 }

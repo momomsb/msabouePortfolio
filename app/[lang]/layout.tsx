@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
-import { AskAiLauncher } from "@/components/ai/ask-ai-launcher";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { MotionProvider } from "@/components/ui/motion-provider";
@@ -96,7 +95,6 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
               {children}
             </main>
             <Footer />
-            <AskAiLauncher />
           </MotionProvider>
         </LocaleProvider>
       </body>

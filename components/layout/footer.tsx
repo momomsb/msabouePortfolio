@@ -37,7 +37,6 @@ export async function Footer() {
 
         <div className="flex flex-col-reverse justify-between gap-4 border-t border-line pt-6 text-xs text-subtle sm:flex-row sm:items-center">
           <p>© 2026 {profile.name}</p>
-          <p className="font-mono">{dict.footer.builtWith}</p>
           <a href="#top" className="inline-flex items-center gap-1.5 self-start transition-colors hover:text-fg sm:self-auto">
             {dict.common.backToTop} <ArrowUp className="size-3.5" aria-hidden />
           </a>

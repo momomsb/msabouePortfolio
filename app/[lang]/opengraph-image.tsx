@@ -29,7 +29,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ lan
     >
       <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 22, letterSpacing: 6, color: "#2de2ff" }}>
         <div style={{ width: 12, height: 12, background: "#2de2ff", borderRadius: 2 }} />
-        {profile.role.toUpperCase()} · DIGITAL LAB
+        {profile.role.toUpperCase()}
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 120, fontWeight: 700, letterSpacing: -5, lineHeight: 0.95 }}>{profile.firstName.toUpperCase()}</div>

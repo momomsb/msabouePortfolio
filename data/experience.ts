@@ -7,7 +7,7 @@ export const experiences: ExperienceData[] = [
     company: "Attijariwafa Bank",
     team: "Digital Center",
     role: { en: "Intern", fr: "Stagiaire" },
-    location: "Casablanca, Maroc",
+    location: { en: "Casablanca, Morocco", fr: "Casablanca, Maroc" },
     type: "internship",
     title: {
       en: "AI agent for technical analysis of the Casablanca Stock Exchange",
@@ -20,8 +20,8 @@ export const experiences: ExperienceData[] = [
       fr: "Stage au Digital Center d'Attijariwafa Bank, consacré à l'application de l'IA à l'analyse technique des valeurs cotées à la Bourse de Casablanca.",
     },
     problem: {
-      en: "Technical analysis means computing and interpreting many indicators (RSI, MACD, moving averages, support and resistance) for each stock. The goal was an AI agent able to run this analysis and explain it.",
-      fr: "L'analyse technique consiste à calculer et interpréter de nombreux indicateurs (RSI, MACD, moyennes mobiles, supports et résistances) pour chaque valeur. L'objectif : un agent IA capable de mener cette analyse et de l'expliquer.",
+      en: "Technical analysis means computing and interpreting many indicators (RSI, MACD, moving averages, support and resistance) for each stock. The goal was an AI agent that answers investors' questions by relying on a dedicated technical analysis engine, and on reference documents for everything else.",
+      fr: "L'analyse technique consiste à calculer et interpréter de nombreux indicateurs (RSI, MACD, moyennes mobiles, supports et résistances) pour chaque valeur. L'objectif : un agent IA qui répond aux questions des investisseurs en s'appuyant sur un moteur d'analyse technique dédié, et sur des documents de référence pour le reste.",
     },
     technologies: ["Python", "LangChain", "LangGraph", "FastAPI", "PostgreSQL", "Pandas", "RAG", "Embeddings", "Vector Database"],
     responsibilities: [
@@ -30,21 +30,19 @@ export const experiences: ExperienceData[] = [
         fr: "Traitement et stockage des données de marché historiques avec Pandas et PostgreSQL.",
       },
       {
-        en: "Implemented the technical indicators: RSI, MACD, EMA20, EMA50, support and resistance.",
-        fr: "Implémentation des indicateurs techniques : RSI, MACD, EMA20, EMA50, supports et résistances.",
+        en: "Built the technical analysis engine that computes the indicators: RSI, MACD, EMA20, EMA50, support and resistance.",
+        fr: "Développement du moteur d'analyse technique qui calcule les indicateurs : RSI, MACD, EMA20, EMA50, supports et résistances.",
       },
       {
-        en: "Designed the AI agent's workflow with LangChain and LangGraph.",
-        fr: "Conception du workflow de l'agent IA avec LangChain et LangGraph.",
+        en: "Designed a ReAct agent with LangChain and LangGraph that calls analysis tools built on the engine (analyse_stock, compare_stocks, analyse_risque…).",
+        fr: "Conception d'un agent ReAct avec LangChain et LangGraph qui appelle des outils d'analyse s'appuyant sur le moteur (analyse_stock, compare_stocks, analyse_risque…).",
       },
       {
-        en: "Built a RAG layer with embeddings and a vector database to ground the agent's answers.",
-        fr: "Mise en place d'une couche RAG (embeddings + base vectorielle) pour fonder les réponses de l'agent.",
+        en: "Built a RAG tool (embeddings + vector database) for documentary questions: investment guides, getting started on the stock exchange, regulations.",
+        fr: "Mise en place d'un outil RAG (embeddings + base vectorielle) pour les questions documentaires : guide d'investissement, premiers pas en bourse, réglementation.",
       },
       { en: "Exposed the agent through a FastAPI backend.", fr: "Exposition de l'agent via un backend FastAPI." },
     ],
-    // TODO: add measured outcomes (accuracy, time saved, adoption, demo feedback…).
-    results: [],
   },
   {
     id: "mtnma-full-stack",
@@ -81,7 +79,5 @@ export const experiences: ExperienceData[] = [
       },
       { en: "Built the user interface with React.", fr: "Développement de l'interface utilisateur avec React." },
     ],
-    // TODO: add outcomes (users, adoption, features delivered…).
-    results: [],
   },
 ];

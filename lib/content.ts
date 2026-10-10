@@ -62,15 +62,3 @@ export function socialLinkProps(platform: SocialLink["platform"]) {
 export function getSocial(platform: SocialLink["platform"]) {
   return socials.find((social) => social.platform === platform) ?? null;
 }
-
-const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9+#]/g, "");
-
-/** Where a technology is actually used, derived from projects and experience. */
-export function getTechnologyUsage(content: Content, technology: string) {
-  const key = normalize(technology);
-  const matches = (list: string[]) => list.some((item) => normalize(item) === key);
-  return {
-    projects: content.projects.filter((project) => matches(project.technologies)),
-    experiences: content.experiences.filter((experience) => matches(experience.technologies)),
-  };
-}
