@@ -57,6 +57,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
     },
     twitter: { card: "summary_large_image", title, description },
     robots: { index: true, follow: true },
+    verification: { google: "vsSJm0ehRMsOtsOLI-xr4xXSk7ZyePt5N-FxHNr0ZlA" },
   };
 }
 
