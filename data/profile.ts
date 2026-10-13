@@ -52,8 +52,8 @@ export const profile = {
    * to pick one; an empty list hides the button.
    */
   cv: [
-    { language: "fr", path: "/cv/CV_Msaboue_Mohamed_FR.pdf" },
-    { language: "en", path: "/cv/CV_Msaboue_Mohamed_EN.pdf" },
+    { language: "fr", path: "/cv/CV_Msaboue_Mohamed_FR1.pdf" },
+    { language: "en", path: "/cv/CV_Msaboue_Mohamed_EN1.pdf" },
   ] as Array<{ language: Locale; path: string }>,
 };
 
